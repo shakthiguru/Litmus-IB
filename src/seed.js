@@ -131,6 +131,7 @@ export function buildSeed() {
     companies, contacts, deals, tasks, notes,
     history,
     proposals: [],
+    deliverables: [],
     connectors: { webhooks: [], slack: { url: '', enabled: false } },
     settings: { orgName: 'Litmus CRM', autoApproveSafe: false },
   };

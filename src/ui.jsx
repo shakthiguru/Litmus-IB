@@ -105,7 +105,7 @@ export function changeText(c) {
   return `${c.field}: ${f(c.from)} -> ${f(c.to)}`;
 }
 
-export function RecordDrawer({ db, user, entity, id, onClose, open }) {
+export function RecordDrawer({ db, user, entity, id, onClose, open, useAI }) {
   const sch = SCHEMA[entity];
   const live = byId(db, entity, id);
   const [editing, setEditing] = useState(false);
@@ -177,6 +177,7 @@ export function RecordDrawer({ db, user, entity, id, onClose, open }) {
             {live && !asOfTs && (
               <div className="row">
                 <button className="btn" onClick={() => setEditing(true)}>Edit</button>
+                {entity === 'tasks' && <button className="btn primary" onClick={() => useAI(id, null, !(db.deliverables || []).some((d) => d.taskId === id))}>Use AI</button>}
                 {entity === 'tasks' && live.status !== 'Done' && (
                   <button className="btn" onClick={() => applyOps([{ op: 'update', entity, id, data: { status: 'Done' } }], { actor: user.id, via: 'ui' })}>Mark done</button>
                 )}
@@ -186,6 +187,25 @@ export function RecordDrawer({ db, user, entity, id, onClose, open }) {
             )}
           </>
         )}
+
+        {(() => {
+          const ds = (db.deliverables || []).filter((d) => (entity === 'tasks' ? d.taskId === id : entity === 'deals' ? d.dealId === id : entity === 'companies' ? d.companyId === id : entity === 'contacts' ? d.contactId === id : false));
+          if (!ds.length) return null;
+          return (
+            <section>
+              <h4>AI deliverables</h4>
+              <ul className="rel-list">
+                {ds.map((d) => (
+                  <li key={d.id}>
+                    <span className={'mini-icon k-' + d.kind}>{d.kind === 'deck' ? 'PPT' : d.kind === 'email' ? 'MAIL' : 'DOC'}</span>
+                    <button className="link" onClick={() => useAI(d.taskId, d.id, false)}>{d.title} v{d.version}</button>
+                    <span className="tiny muted">{fmtDateTime(d.createdAt)}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          );
+        })()}
 
         {live && ['deals', 'contacts', 'companies'].includes(entity) && (
           <section>
@@ -234,7 +254,7 @@ export function RecordDrawer({ db, user, entity, id, onClose, open }) {
   );
 }
 
-export function DataTable({ db, entity, rows, columns, open }) {
+export function DataTable({ db, entity, rows, columns, open, extra }) {
   const sch = SCHEMA[entity];
   const [sort, setSort] = useState({ key: null, dir: 1 });
   const sorted = useMemo(() => {
@@ -260,6 +280,7 @@ export function DataTable({ db, entity, rows, columns, open }) {
                 {f.label}{sort.key === f.key ? (sort.dir > 0 ? ' ^' : ' v') : ''}
               </th>
             ))}
+            {extra && <th className="ai-col">{extra.label}</th>}
           </tr>
         </thead>
         <tbody>
@@ -270,10 +291,11 @@ export function DataTable({ db, entity, rows, columns, open }) {
                   {i === 0 && f.key === 'firstName' ? recordTitle(entity, r) : <FieldValue db={db} field={f} value={r[f.key]} />}
                 </td>
               ))}
+              {extra && <td className="ai-col">{extra.render(r)}</td>}
             </tr>
           ))}
           {!sorted.length && (
-            <tr><td colSpan={cols.length} className="muted center">No records</td></tr>
+            <tr><td colSpan={cols.length + (extra ? 1 : 0)} className="muted center">No records</td></tr>
           )}
         </tbody>
       </table>

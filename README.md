@@ -23,6 +23,7 @@ Change these in Settings after your first login.
 | Knowledge graph | `src/graph.js` | Read model built live from the records: companies, contacts, deals, tasks, notes, owners and their relationships. Interactive graph view plus traversal tool for the AI. |
 | Natural-language query | `src/ai.js` | Built-in offline assistant (no key needed) plus a Claude copilot (paste an Anthropic API key in Settings) that uses tools: `search_records`, `get_record`, `graph_neighbors`, `pipeline_summary`. |
 | AI actions with guardrails | `propose_changes` tool + Approvals page | AI never writes directly. It proposes operations; a human approves; then they are applied through the CRM API and logged. Deletes and bulk changes always need approval. |
+| AI task actions | Tasks > **Use AI** (`src/agent.js`, `src/workspace.jsx`) | One click per task: the AI reads the task, deal, company, contact, notes, related tasks, earlier deliverables and any files or emails you attach, then produces the finished deliverable (proposal, email or slide deck). It shows live activity, saves versioned files (AI Deliverables page), lets you refine with feedback, download (.doc, .html deck, .md) and run next actions (mark done, log note, follow-up task). |
 | Connectors | Connectors page | Outbound webhooks for every record event (Zapier, Make, Activepieces, n8n, your own service), Slack notifications, CSV import/export, JSON backup/restore, tool manifest for external agents. |
 
 ## Important limits of this hosted version

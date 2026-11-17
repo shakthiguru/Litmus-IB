@@ -44,6 +44,12 @@ export async function initDB() {
     state = await seededDB();
     safeSet(DB_KEY, JSON.stringify(state));
   }
+  if (!Array.isArray(state.deliverables)) state.deliverables = [];
+}
+
+/** Low-level update for collections outside the record schema (e.g. AI deliverables). */
+export function mutate(fn) {
+  commit(fn(state));
 }
 
 export function getState() { return state; }
@@ -61,6 +67,7 @@ export async function resetDB() {
   // keep users and connector config, reset business data
   fresh.users = state.users;
   fresh.connectors = state.connectors;
+  fresh.deliverables = [];
   commit(fresh);
 }
 

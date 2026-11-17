@@ -7,9 +7,11 @@ import {
 import { buildGraph, layout, NODE_TYPES } from './graph.js';
 import { runLocal, runClaude, TOOL_DEFS } from './ai.js';
 import { Modal, RecordForm, DataTable, changeText } from './ui.jsx';
+import { TaskAICell, DeliverablePreview } from './workspace.jsx';
+import { KINDS } from './agent.js';
 
 // ---------------------------------------------------------------- Dashboard
-export function Dashboard({ db, user, open }) {
+export function Dashboard({ db, user, open, useAI }) {
   const s = pipelineSummary(db);
   const maxStage = Math.max(...s.byStage.map((x) => x.amount), 1);
   const overdue = db.tasks.filter((t) => t.status !== 'Done' && t.dueDate && t.dueDate < todayISO());
@@ -54,9 +56,12 @@ export function Dashboard({ db, user, open }) {
           <h4>My open tasks</h4>
           <ul className="list">
             {myTasks.slice(0, 6).map((t) => (
-              <li key={t.id} onClick={() => open('tasks', t.id)}>
-                <div className="strong">{t.title}</div>
-                <div className={'tiny ' + (t.dueDate < todayISO() ? 'danger-text' : 'muted')}>due {fmtDate(t.dueDate)} - {t.priority}</div>
+              <li key={t.id} onClick={() => open('tasks', t.id)} className="row between">
+                <div>
+                  <div className="strong">{t.title}</div>
+                  <div className={'tiny ' + (t.dueDate < todayISO() ? 'danger-text' : 'muted')}>due {fmtDate(t.dueDate)} - {t.priority}</div>
+                </div>
+                <TaskAICell db={db} task={t} onOpen={useAI} />
               </li>
             ))}
             {!myTasks.length && <li className="muted">Nothing open. Nice.</li>}
@@ -86,7 +91,7 @@ const LIST_COLUMNS = {
   deals: ['name', 'companyId', 'amount', 'stage', 'closeDate', 'ownerId'],
 };
 
-export function EntityPage({ db, user, entity, open }) {
+export function EntityPage({ db, user, entity, open, useAI }) {
   const sch = SCHEMA[entity];
   const [q, setQ] = useState('');
   const [creating, setCreating] = useState(false);
@@ -116,7 +121,8 @@ export function EntityPage({ db, user, entity, open }) {
         <div className="spacer" />
         <button className="btn primary" onClick={() => setCreating(true)}>New {sch.singular.toLowerCase()}</button>
       </div>
-      <DataTable db={db} entity={entity} rows={rows} columns={LIST_COLUMNS[entity]} open={open} />
+      <DataTable db={db} entity={entity} rows={rows} columns={LIST_COLUMNS[entity]} open={open}
+        extra={entity === 'tasks' ? { label: 'AI action', render: (r) => <TaskAICell db={db} task={r} onOpen={useAI} /> } : null} />
       {creating && (
         <Modal title={'New ' + sch.singular.toLowerCase()} onClose={() => setCreating(false)}>
           <RecordForm db={db} user={user} entity={entity} onDone={() => setCreating(false)} />
@@ -803,5 +809,58 @@ function UserModal({ user, onClose }) {
         <div className="row end"><button type="button" className="btn ghost" onClick={onClose}>Cancel</button><button className="btn primary">Save</button></div>
       </form>
     </Modal>
+  );
+}
+
+// ---------------------------------------------------------------- AI deliverables
+export function DeliverablesPage({ db, useAI, open }) {
+  const [kind, setKind] = useState('');
+  const [q, setQ] = useState('');
+  const [preview, setPreview] = useState(null);
+  const list = (db.deliverables || []).filter((d) => (!kind || d.kind === kind) && (!q || (d.title + ' ' + d.content).toLowerCase().includes(q.toLowerCase())));
+  return (
+    <div className="stack">
+      <div className="toolbar">
+        <input className="search" placeholder="Search deliverables..." value={q} onChange={(e) => setQ(e.target.value)} />
+        <select value={kind} onChange={(e) => setKind(e.target.value)}>
+          <option value="">All types</option>
+          {Object.entries(KINDS).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
+        </select>
+        <span className="tiny muted">{list.length} file(s)</span>
+      </div>
+      {!list.length && (
+        <div className="card">
+          <h4>No AI deliverables yet</h4>
+          <p className="muted">Open <a href="#/tasks">Tasks</a> and press <b>Use AI</b> on any task. The AI reads the task, deal, company, contact, notes and earlier versions, then produces the finished proposal, email or deck. Everything it creates is saved here.</p>
+        </div>
+      )}
+      <div className="deliv-grid">
+        {list.map((d) => {
+          const task = byId(db, 'tasks', d.taskId);
+          return (
+            <div key={d.id} className="card deliv-card">
+              <div className="file-row">
+                <div className={'file-icon k-' + d.kind}>{d.kind === 'deck' ? 'PPT' : d.kind === 'email' ? 'MAIL' : 'DOC'}</div>
+                <div className="min0">
+                  <div className="strong clamp">{d.title}</div>
+                  <div className="tiny muted">v{d.version} - {fmtDateTime(d.createdAt)} - {d.model === 'template' ? 'template' : d.model}</div>
+                </div>
+              </div>
+              <div className="tiny muted clamp">Task: {task ? task.title : '(deleted task)'}{d.dealId ? ' - ' + recordTitle('deals', byId(db, 'deals', d.dealId)) : ''}</div>
+              <div className="row">
+                <button className="btn sm" onClick={() => setPreview(d)}>Preview</button>
+                {task && <button className="btn sm primary" onClick={() => useAI(d.taskId, d.id, false)}>Open workspace</button>}
+                {d.dealId && <button className="btn sm ghost" onClick={() => open('deals', d.dealId)}>Deal</button>}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      {preview && (
+        <Modal title={preview.title + ' v' + preview.version} onClose={() => setPreview(null)} wide>
+          <div className="ws-output"><DeliverablePreview kind={preview.kind} content={preview.content} /></div>
+        </Modal>
+      )}
+    </div>
   );
 }

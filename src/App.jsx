@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDB, useSession, login, setSession } from './store.js';
-import { Dashboard, EntityPage, DealsBoard, GraphPage, CopilotPage, ApprovalsPage, AuditPage, ConnectorsPage, SettingsPage } from './pages.jsx';
+import { Dashboard, EntityPage, DealsBoard, GraphPage, CopilotPage, ApprovalsPage, AuditPage, ConnectorsPage, SettingsPage, DeliverablesPage } from './pages.jsx';
+import { AIWorkspace } from './workspace.jsx';
 import { RecordDrawer } from './ui.jsx';
 
 const NAV = [
@@ -10,6 +11,7 @@ const NAV = [
   { id: 'companies', label: 'Companies', icon: 'M4 21V5l8-3 8 3v16H4zm4-12h2v2H8zm6 0h2v2h-2zm-6 4h2v2H8zm6 0h2v2h-2z' },
   { id: 'contacts', label: 'Contacts', icon: 'M12 12a4 4 0 100-8 4 4 0 000 8zm0 2c-4 0-8 2-8 5v1h16v-1c0-3-4-5-8-5z' },
   { id: 'tasks', label: 'Tasks', icon: 'M9 16.2l-3.5-3.5L4 14.2l5 5 11-11-1.5-1.5z' },
+  { id: 'deliverables', label: 'AI Deliverables', icon: 'M6 2h8l6 6v14H6zM13 3.5V9h5.5M9 13h8v1.5H9zm0 3h8v1.5H9z' },
   { id: 'graph', label: 'Knowledge Graph', icon: 'M6 6a2 2 0 11.001 0zM18 8a2 2 0 11.001 0zM12 19a2 2 0 11.001 0zM6 6l12 2-6 11z' },
   { id: 'approvals', label: 'Approvals', icon: 'M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6z' },
   { id: 'audit', label: 'Audit Log', icon: 'M13 3a9 9 0 00-9 9H1l4 4 4-4H6a7 7 0 117 7v2a9 9 0 000-18zm-1 5v5l4 2 .8-1.3-3.3-2V8z' },
@@ -70,6 +72,7 @@ export default function App() {
   const route = useRoute();
   const [drawer, setDrawer] = useState(null); // {entity, id}
   const [navOpen, setNavOpen] = useState(false);
+  const [aiWs, setAiWs] = useState(null); // {taskId, deliverableId, autoRun}
 
   useEffect(() => setNavOpen(false), [route]);
 
@@ -77,7 +80,8 @@ export default function App() {
 
   const pending = db.proposals.filter((p) => p.status === 'pending').length;
   const open = (entity, id) => setDrawer({ entity, id });
-  const ctx = { db, user, open };
+  const useAI = (taskId, deliverableId = null, autoRun = false) => { setDrawer(null); setAiWs({ taskId, deliverableId, autoRun }); };
+  const ctx = { db, user, open, useAI };
 
   let page;
   switch (route) {
@@ -87,6 +91,7 @@ export default function App() {
     case 'contacts':
     case 'tasks': page = <EntityPage key={route} entity={route} {...ctx} />; break;
     case 'graph': page = <GraphPage {...ctx} />; break;
+    case 'deliverables': page = <DeliverablesPage {...ctx} />; break;
     case 'approvals': page = <ApprovalsPage {...ctx} />; break;
     case 'audit': page = <AuditPage {...ctx} />; break;
     case 'connectors': page = <ConnectorsPage {...ctx} />; break;
@@ -126,6 +131,7 @@ export default function App() {
         </header>
         <div className="content">{page}</div>
       </main>
+      {aiWs && <AIWorkspace key={aiWs.taskId + (aiWs.deliverableId || '')} {...ctx} taskId={aiWs.taskId} initialDeliverableId={aiWs.deliverableId} autoRun={aiWs.autoRun} onClose={() => setAiWs(null)} />}
       {drawer && <RecordDrawer {...ctx} entity={drawer.entity} id={drawer.id} onClose={() => setDrawer(null)} />}
     </div>
   );
