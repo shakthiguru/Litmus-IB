@@ -1,0 +1,80 @@
+# ABDX Playwright suite on GitHub Actions: seed -> parallel (sharded across runners) -> stateful -> merged report.
+# Manual trigger only. Choose how many machines the parallel pass is spread across.
+name: ABDX tests
+on:
+  workflow_dispatch:
+    inputs:
+      shards:
+        description: Number of runners for the parallel pass
+        default: '8'
+defaults:
+  run:
+    working-directory: abdx-tests
+jobs:
+  seed:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm ci && npx playwright install --with-deps chromium
+      - run: npx playwright test --project seed --workers 1 --reporter blob
+        env: { PLAYWRIGHT_BLOB_OUTPUT_FILE: blob-report/seed.zip }
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with: { name: blob-seed, path: abdx-tests/blob-report, retention-days: 7 }
+  shards:
+    runs-on: ubuntu-latest
+    outputs:
+      list: ${{ steps.m.outputs.list }}
+    steps:
+      - id: m
+        working-directory: .
+        run: echo "list=$(seq -s, 1 ${{ inputs.shards }} | sed 's/^/[/;s/$/]/')" >> "$GITHUB_OUTPUT"
+  parallel:
+    needs: [seed, shards]
+    if: always()
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: ${{ fromJSON(needs.shards.outputs.list) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm ci && npx playwright install --with-deps chromium
+      - run: npx playwright test --project parallel --workers 4 --shard ${{ matrix.shard }}/${{ inputs.shards }} --reporter blob
+        env: { PLAYWRIGHT_BLOB_OUTPUT_FILE: 'blob-report/parallel-${{ matrix.shard }}.zip' }
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with: { name: 'blob-parallel-${{ matrix.shard }}', path: abdx-tests/blob-report, retention-days: 7 }
+  stateful:
+    needs: parallel
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm ci && npx playwright install --with-deps chromium
+      - run: npx playwright test --project stateful --workers 1 --reporter blob
+        env: { PLAYWRIGHT_BLOB_OUTPUT_FILE: blob-report/stateful.zip }
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with: { name: blob-stateful, path: abdx-tests/blob-report, retention-days: 7 }
+  report:
+    needs: stateful
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm ci
+      - uses: actions/download-artifact@v4
+        with: { pattern: 'blob-*', path: abdx-tests/all-blobs, merge-multiple: true }
+      - run: npx playwright merge-reports --reporter html all-blobs
+        env: { PLAYWRIGHT_HTML_OUTPUT_DIR: reports/playwright-html, PLAYWRIGHT_HTML_OPEN: never }
+      - uses: actions/upload-artifact@v4
+        with: { name: abdx-report, path: abdx-tests/reports, retention-days: 14 }

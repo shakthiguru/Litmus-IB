@@ -4,6 +4,13 @@
   "type": "commonjs",
   "description": "Playwright test suite for ABDX (Athena Banking Digital Experience)",
   "scripts": {
-    "catalogue": "node catalogue/build.js"
+    "catalogue": "node catalogue/build.js",
+    "test:all": "node scripts/run-all.js",
+    "report": "node scripts/report.js",
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "@types/node": "^22.20.5"
   }
 }
