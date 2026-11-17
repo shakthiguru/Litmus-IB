@@ -1,10 +1,11 @@
+import { DEMO_WORKSPACE, DEMO_DOMAIN } from './brand.js';
 // Demo data so the CRM is useful on first login. All names are fictional.
 import { todayISO } from './schema.js';
 
 export const DEFAULT_USERS = [
-  { id: 'u_admin', name: 'Admin User', email: 'admin@litmus.app', role: 'admin', password: 'Litmus@2026' },
-  { id: 'u_sales', name: 'Priya Sharma', email: 'sales@litmus.app', role: 'member', password: 'Sales@2026' },
-  { id: 'u_rahul', name: 'Rahul Mehta', email: 'rahul@litmus.app', role: 'member', password: 'Rahul@2026' },
+  { id: 'u_admin', name: 'Admin User', email: `admin@${DEMO_DOMAIN}`, role: 'admin', password: 'Nodus@2026' },
+  { id: 'u_sales', name: 'Priya Sharma', email: `sales@${DEMO_DOMAIN}`, role: 'member', password: 'Sales@2026' },
+  { id: 'u_rahul', name: 'Rahul Mehta', email: `rahul@${DEMO_DOMAIN}`, role: 'member', password: 'Rahul@2026' },
 ];
 
 const daysAgo = (n) => {
@@ -133,6 +134,6 @@ export function buildSeed() {
     proposals: [],
     deliverables: [],
     connectors: { webhooks: [], slack: { url: '', enabled: false } },
-    settings: { orgName: 'Litmus CRM', autoApproveSafe: false },
+    settings: { orgName: DEMO_WORKSPACE, autoApproveSafe: false },
   };
 }

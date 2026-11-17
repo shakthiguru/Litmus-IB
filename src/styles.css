@@ -388,3 +388,5 @@ label.chk { flex-direction: row; align-items: center; gap: 6px; color: var(--tex
   .ws-output { padding: 12px; max-height: none; }
   .slide-frame h2 { font-size: 17px; }
 }
+
+.ws-name { font-weight: 500; }

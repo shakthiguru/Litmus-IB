@@ -1,3 +1,4 @@
+import { APP_NAME, APP_SLUG } from './brand.js';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { SCHEMA, STAGES, STAGE_PROBABILITY, recordTitle, fmtMoney, fmtDate, fmtDateTime, todayISO } from './schema.js';
 import {
@@ -641,7 +642,7 @@ export function ConnectorsPage({ db, user }) {
           <div className="row wrap">
             <input placeholder="https://hooks.slack.com/services/..." value={slackUrl} onChange={(e) => setSlackUrl(e.target.value)} />
             <button className="btn primary" onClick={() => { updateConnectors({ slack: { url: slackUrl, enabled: !!slackUrl } }); setMsg(slackUrl ? 'Slack connected.' : 'Slack disconnected.'); }}>Save</button>
-            <button className="btn" disabled={!conn.slack?.enabled} onClick={() => { notifySlack('Test message from Litmus CRM'); setMsg('Test message sent to Slack.'); }}>Test</button>
+            <button className="btn" disabled={!conn.slack?.enabled} onClick={() => { notifySlack(`Test message from ${APP_NAME}`); setMsg('Test message sent to Slack.'); }}>Test</button>
           </div>
           <div className="tiny muted">Status: {conn.slack?.enabled ? 'connected' : 'not connected'}</div>
         </div>
@@ -666,7 +667,7 @@ export function ConnectorsPage({ db, user }) {
             <li><b>search_records</b>, <b>get_record</b>, <b>graph_neighbors</b>, <b>pipeline_summary</b>: read the system of record and the graph</li>
             <li><b>propose_changes</b>: write path, always through human approval</li>
           </ul>
-          <button className="btn" onClick={() => download('litmus-crm-tools.json', JSON.stringify({ name: 'litmus-crm', tools: TOOL_DEFS, schema: Object.fromEntries(Object.entries(SCHEMA).map(([k, s]) => [k, s.fields])) }, null, 2), 'application/json')}>Download tool manifest</button>
+          <button className="btn" onClick={() => download(`${APP_SLUG}-tools.json`, JSON.stringify({ name: APP_SLUG, tools: TOOL_DEFS, schema: Object.fromEntries(Object.entries(SCHEMA).map(([k, s]) => [k, s.fields])) }, null, 2), 'application/json')}>Download tool manifest</button>
         </div>
       </div>
 
@@ -724,7 +725,7 @@ export function SettingsPage({ db, user }) {
 
         <div className="card">
           <h4>Guardrails and workspace</h4>
-          <label>Workspace name<input defaultValue={db.settings.orgName} onBlur={(e) => updateSettings({ orgName: e.target.value || 'Litmus CRM' })} disabled={!isAdmin} /></label>
+          <label>Workspace / company name (used in AI deliverables)<input defaultValue={db.settings.orgName} onBlur={(e) => updateSettings({ orgName: e.target.value || 'My workspace' })} disabled={!isAdmin} /></label>
           <label className="chk">
             <input type="checkbox" checked={!!db.settings.autoApproveSafe} disabled={!isAdmin} onChange={(e) => updateSettings({ autoApproveSafe: e.target.checked })} />
             Auto-approve small AI changes (up to 3 operations, no deletes)
@@ -751,7 +752,7 @@ export function SettingsPage({ db, user }) {
           <h4>Backup and restore</h4>
           <p className="tiny muted">Data is stored in this browser. Download a backup to keep it safe or to move it to another device or browser. The API key is never included.</p>
           <div className="row wrap">
-            <button className="btn" onClick={() => download('litmus-crm-backup-' + todayISO() + '.json', JSON.stringify(db, null, 2), 'application/json')}>Download backup</button>
+            <button className="btn" onClick={() => download(`${APP_SLUG}-backup-` + todayISO() + '.json', JSON.stringify(db, null, 2), 'application/json')}>Download backup</button>
             {isAdmin && <button className="btn" onClick={() => restoreRef.current?.click()}>Restore backup</button>}
             {isAdmin && <button className="btn danger" onClick={async () => { if (confirm('Replace all CRM data with the demo data? Users and connectors are kept.')) { await resetDB(); flash('Demo data restored.'); } }}>Reset to demo data</button>}
             <input ref={restoreRef} type="file" accept="application/json" hidden onChange={async (e) => {

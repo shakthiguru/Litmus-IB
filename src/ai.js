@@ -1,3 +1,4 @@
+import { APP_NAME } from './brand.js';
 // AI layer: read tools over the system of record + knowledge graph, and a propose_changes tool
 // whose writes never touch data directly. They become proposals that a human approves (guardrails).
 import Anthropic from '@anthropic-ai/sdk';
@@ -165,7 +166,7 @@ function schemaDoc() {
 
 function systemPrompt(user) {
   const db = getState();
-  return `You are the AI copilot inside Litmus CRM, an AI-powered CRM. The CRM is the system of record; a knowledge graph links companies, contacts, deals, tasks, notes and owners.
+  return `You are the AI copilot inside ${APP_NAME}, an AI-powered CRM. The CRM is the system of record; a knowledge graph links companies, contacts, deals, tasks, notes and owners.
 
 Answer questions by calling the read tools; never invent records, numbers or ids. Be concise and use short tables or bullet lists when listing records. Amounts are USD.
 

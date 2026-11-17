@@ -1,9 +1,9 @@
 {
-  "name": "litmus-crm",
+  "name": "nodus-crm",
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "Litmus CRM: an AI-powered CRM with a knowledge graph, natural-language querying and approval-gated AI actions.",
+  "description": "Nodus CRM: open-source AI CRM with a knowledge graph, natural-language queries and AI agents that produce finished work (proposals, emails, decks) with human approval.",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -17,5 +17,20 @@
   "devDependencies": {
     "@vitejs/plugin-react": "^6.3.0",
     "vite": "^8.3.8"
+  },
+  "license": "MIT",
+  "keywords": [
+    "crm",
+    "ai",
+    "ai-agents",
+    "knowledge-graph",
+    "claude",
+    "react",
+    "open-source",
+    "sales"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shakthiguru/Litmus-IB"
   }
 }

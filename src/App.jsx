@@ -1,3 +1,4 @@
+import { APP_NAME, TAGLINE, DEMO_DOMAIN } from './brand.js';
 import { useEffect, useState } from 'react';
 import { useDB, useSession, login, setSession } from './store.js';
 import { Dashboard, EntityPage, DealsBoard, GraphPage, CopilotPage, ApprovalsPage, AuditPage, ConnectorsPage, SettingsPage, DeliverablesPage } from './pages.jsx';
@@ -39,7 +40,7 @@ export function Icon({ d, size = 18 }) {
 }
 
 function Login() {
-  const [email, setEmail] = useState('admin@litmus.app');
+  const [email, setEmail] = useState(`admin@${DEMO_DOMAIN}`);
   const [password, setPassword] = useState('');
   const [err, setErr] = useState('');
   const [busy, setBusy] = useState(false);
@@ -54,8 +55,8 @@ function Login() {
   return (
     <div className="login-wrap">
       <form className="login-card" onSubmit={submit}>
-        <div className="brand big"><span className="logo" />Litmus CRM</div>
-        <p className="muted">AI-powered CRM with a knowledge graph, natural-language querying and approval-gated AI actions.</p>
+        <div className="brand big"><span className="logo" />{APP_NAME}</div>
+        <p className="muted">{TAGLINE}</p>
         <label>Email<input type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="username" required /></label>
         <label>Password<input type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" required autoFocus /></label>
         {err && <div className="error">{err}</div>}
@@ -102,7 +103,7 @@ export default function App() {
   return (
     <div className={'shell' + (navOpen ? ' nav-open' : '')}>
       <aside className="sidebar">
-        <div className="brand"><span className="logo" />{db.settings.orgName || 'Litmus CRM'}</div>
+        <div className="brand"><span className="logo" /><div>{APP_NAME}<div className="tiny muted ws-name">{db.settings.orgName}</div></div></div>
         <nav>
           {NAV.map((n) => (
             <a key={n.id} href={'#/' + n.id} className={route === n.id || (route === 'dashboard' && n.id === 'dashboard') ? 'active' : ''}>

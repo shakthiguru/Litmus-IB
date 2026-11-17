@@ -1,3 +1,4 @@
+import { APP_NAME } from './brand.js';
 // Task agent: turns a CRM task into a finished deliverable (document, email or deck).
 // It gathers CRM context, reads attachments and previous versions, drafts with Claude
 // (or an offline template), saves a versioned deliverable and exposes live job state.
@@ -53,7 +54,7 @@ export function taskContext(db, task) {
   const previous = (db.deliverables || [])
     .filter((d) => d.taskId === task.id || (deal && d.dealId === deal.id))
     .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
-  return { task, deal, company, contact, contacts, notes, otherTasks, otherDeals, dealHistory, previous, owner: userName(db, deal?.ownerId || task.assigneeId), org: db.settings.orgName || 'Litmus CRM' };
+  return { task, deal, company, contact, contacts, notes, otherTasks, otherDeals, dealHistory, previous, owner: userName(db, deal?.ownerId || task.assigneeId), org: db.settings.orgName || APP_NAME };
 }
 
 export function defaultInstruction(task, ctx, kind) {

@@ -1,12 +1,15 @@
+import { APP_NAME, DEMO_DOMAIN, DEMO_WORKSPACE } from './brand.js';
 // The system of record. All writes go through applyOps (the "CRM API"):
 // validated, all-or-nothing, logged to history (audit + temporal model), and broadcast to connectors.
 import { useSyncExternalStore } from 'react';
 import { SCHEMA, STAGES, STAGE_PROBABILITY, recordTitle } from './schema.js';
 import { buildSeed, DEFAULT_USERS } from './seed.js';
 
-const DB_KEY = 'litmus-crm-db-v1';
-const SESSION_KEY = 'litmus-crm-session';
-const AI_KEY = 'litmus-crm-ai-settings';
+const DB_KEY = 'nodus-crm-db-v1';
+const SESSION_KEY = 'nodus-crm-session';
+const AI_KEY = 'nodus-crm-ai-settings';
+// Keys used before the project was renamed; read once and migrated.
+const LEGACY_KEYS = { [DB_KEY]: 'litmus-crm-db-v1', [SESSION_KEY]: 'litmus-crm-session', [AI_KEY]: 'litmus-crm-ai-settings' };
 
 let state = null;
 const listeners = new Set();
@@ -22,6 +25,7 @@ function safeDel(key) {
 }
 
 export async function hashPassword(email, password) {
+  // The salt prefix predates the rename; changing it would invalidate every stored password.
   const data = new TextEncoder().encode('litmus-crm:' + email.trim().toLowerCase() + ':' + password);
   const buf = await crypto.subtle.digest('SHA-256', data);
   return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, '0')).join('');
@@ -35,7 +39,35 @@ async function seededDB() {
   return db;
 }
 
+function migrateLegacyKeys() {
+  for (const [key, old] of Object.entries(LEGACY_KEYS)) {
+    if (safeGet(key) === null && safeGet(old) !== null) {
+      safeSet(key, safeGet(old));
+      safeDel(old);
+    }
+  }
+}
+
+/** Move the original demo accounts (old domain, default password still set) to the new demo domain. */
+async function migrateDemoUsers(db) {
+  let changed = false;
+  for (const def of DEFAULT_USERS) {
+    const u = db.users.find((x) => x.id === def.id);
+    if (!u || u.email === def.email) continue;
+    const oldEmail = def.email.replace('@' + DEMO_DOMAIN, '@litmus.app');
+    const oldPassword = def.password.replace(/^Nodus/, 'Litmus');
+    if (u.email === oldEmail && u.passHash === (await hashPassword(oldEmail, oldPassword))) {
+      u.email = def.email;
+      u.passHash = await hashPassword(def.email, def.password);
+      changed = true;
+    }
+  }
+  if (db.settings?.orgName === 'Litmus CRM') { db.settings.orgName = DEMO_WORKSPACE; changed = true; }
+  return changed;
+}
+
 export async function initDB() {
+  migrateLegacyKeys();
   const raw = safeGet(DB_KEY);
   if (raw) {
     try { state = JSON.parse(raw); } catch { state = null; }
@@ -45,6 +77,7 @@ export async function initDB() {
     safeSet(DB_KEY, JSON.stringify(state));
   }
   if (!Array.isArray(state.deliverables)) state.deliverables = [];
+  if (await migrateDemoUsers(state)) safeSet(DB_KEY, JSON.stringify(state));
 }
 
 /** Low-level update for collections outside the record schema (e.g. AI deliverables). */
@@ -72,7 +105,7 @@ export async function resetDB() {
 }
 
 export function replaceDB(db) {
-  if (!db || !Array.isArray(db.users) || !Array.isArray(db.deals)) throw new Error('Not a Litmus CRM backup file.');
+  if (!db || !Array.isArray(db.users) || !Array.isArray(db.deals)) throw new Error(`Not a ${APP_NAME} backup file.`);
   commit(db);
 }
 
@@ -337,7 +370,7 @@ export function notifySlack(text) {
 }
 
 export async function testWebhook(url) {
-  const st = await postJSON(url, { event: 'test.ping', ts: new Date().toISOString(), message: 'Hello from Litmus CRM' });
+  const st = await postJSON(url, { event: 'test.ping', ts: new Date().toISOString(), message: `Hello from ${APP_NAME}` });
   logDelivery(url, 'test.ping', st);
   return st;
 }
