@@ -1,0 +1,9 @@
+{
+  "name": "abdx-tests",
+  "private": true,
+  "type": "commonjs",
+  "description": "Playwright test suite for ABDX (Athena Banking Digital Experience)",
+  "scripts": {
+    "catalogue": "node catalogue/build.js"
+  }
+}

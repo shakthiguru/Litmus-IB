@@ -1,0 +1,325 @@
+ID,Module,Title,Priority,Type,Run mode,Source,Test data,Steps,Expected result
+"TC-AUTH-001","Authentication","Valid login lands on Dashboard","P1","UI","parallel","Brief","MASHREQCORP / Test@123","1. Open /login
+2. Enter username and password
+3. Click Login","URL is /dashboard and tile-pending-approvals is visible"
+"TC-AUTH-002","Authentication","Username is case-insensitive","P2","UI","parallel","Brief","mashreqcorp / Test@123","1. Open /login
+2. Enter lowercase username and valid password
+3. Click Login","URL is /dashboard"
+"TC-AUTH-003","Authentication","Wrong password shows exact error","P1","UI","parallel","Brief","MASHREQCORP / Wrong@123","1. Open /login
+2. Enter valid username, wrong password
+3. Click Login","login-error = ""Invalid username or password."" and URL stays /login"
+"TC-AUTH-004","Authentication","Unknown user shows exact error","P1","UI","parallel","Brief","NOUSER / Test@123","1. Open /login
+2. Enter unknown username
+3. Click Login","login-error = ""Invalid username or password."""
+"TC-AUTH-005","Authentication","Empty credentials show exact error","P2","UI","parallel","Live","blank / blank","1. Open /login
+2. Click Login without input","login-error = ""Invalid username or password."""
+"TC-AUTH-006","Authentication","Password field is masked","P3","UI","parallel","Live","-","1. Open /login
+2. Inspect login-password","Input type is ""password"""
+"TC-AUTH-007","Authentication","Top bar shows user, branch and party","P2","UI","parallel","Live","Logged in session","1. Login
+2. Read top bar","user-menu contains MASHREQCORP, topbar-branch = ""Downtown Branch"", topbar-party = ""Athena Corporate Ltd"""
+"TC-AUTH-008","Authentication","Logout returns to login","P1","UI","parallel","Brief","Logged in session","1. Login
+2. Open user-menu
+3. Click btn-logout","URL is /login"
+"TC-AUTH-009","Authentication","Protected route blocked after logout","P1","UI","parallel","Live","-","1. Login then logout
+2. Open /dashboard directly","Redirected to /login"
+"TC-AUTH-010","Authentication","Deep link without session redirects to login","P1","UI","parallel","Live","-","1. With no session, open /approvals","Redirected to /login"
+"TC-AUTH-011","Authentication","Session survives page reload","P2","UI","parallel","Live","Logged in session","1. Login
+2. Reload /dashboard","Still on /dashboard with user-menu visible"
+"TC-AUTH-012","Authentication","Root URL redirects unauthenticated user to login","P3","UI","parallel","Live","-","1. With no session, open /","Redirected to /login"
+"TC-NAV-001","Navigation & Shell","Drawer lists Accounts and Payments sections","P2","UI","parallel","Live","-","1. Login
+2. Read drawer","Drawer contains ACCOUNTS, PAYMENTS, International Payment, Pre-Existing Deal (IBG), Payment Tracker, Drafts"
+"TC-NAV-002","Navigation & Shell","Menu menu-item-dashboard navigates to /dashboard","P2","UI","parallel","Brief","-","1. Login
+2. Start on a different page
+3. Click menu-item-dashboard","URL is /dashboard"
+"TC-NAV-003","Navigation & Shell","Menu menu-item-intl-payment navigates to /payment/international","P2","UI","parallel","Brief","-","1. Login
+2. Start on a different page
+3. Click menu-item-intl-payment","URL is /payment/international"
+"TC-NAV-004","Navigation & Shell","Menu menu-item-ibg-deal navigates to /payment/ibg-deal","P2","UI","parallel","Brief","-","1. Login
+2. Start on a different page
+3. Click menu-item-ibg-deal","URL is /payment/ibg-deal"
+"TC-NAV-005","Navigation & Shell","Menu menu-item-approvals navigates to /approvals","P2","UI","parallel","Brief","-","1. Login
+2. Start on a different page
+3. Click menu-item-approvals","URL is /approvals"
+"TC-NAV-006","Navigation & Shell","Menu menu-item-drafts navigates to /drafts","P2","UI","parallel","Brief","-","1. Login
+2. Start on a different page
+3. Click menu-item-drafts","URL is /drafts"
+"TC-NAV-007","Navigation & Shell","Menu toggle collapses and restores the drawer","P3","UI","parallel","Brief","-","1. Login
+2. Click menu-toggle
+3. Click menu-toggle again","Drawer state changes on first click and returns to visible on second"
+"TC-NAV-008","Navigation & Shell","Payments menu group has data-testid menu-item-payments","P3","UI","parallel","Brief","-","1. Login
+2. Locate menu-item-payments","Element with data-testid menu-item-payments exists (listed in brief)"
+"TC-NAV-009","Navigation & Shell","Unknown route shows a not-found page","P3","UI","parallel","AI Lens","/no-such-page","1. Login
+2. Open /no-such-page","A not-found message is shown (app must not silently show Dashboard)"
+"TC-MOCK-001","Mockup Screens","/accounts/casa renders ""Current & Savings Accounts"" inside the shell","P3","UI","parallel","Brief","/accounts/casa","1. Login
+2. Open /accounts/casa","HTTP 200, heading contains ""Current & Savings Accounts"", drawer and user-menu visible"
+"TC-MOCK-002","Mockup Screens","/accounts/deposits renders ""Deposits"" inside the shell","P3","UI","parallel","Brief","/accounts/deposits","1. Login
+2. Open /accounts/deposits","HTTP 200, heading contains ""Deposits"", drawer and user-menu visible"
+"TC-MOCK-003","Mockup Screens","/accounts/loans renders ""Loans & Finances"" inside the shell","P3","UI","parallel","Brief","/accounts/loans","1. Login
+2. Open /accounts/loans","HTTP 200, heading contains ""Loans & Finances"", drawer and user-menu visible"
+"TC-MOCK-004","Mockup Screens","/payment/transfer renders ""Transfer Money"" inside the shell","P3","UI","parallel","Brief","/payment/transfer","1. Login
+2. Open /payment/transfer","HTTP 200, heading contains ""Transfer Money"", drawer and user-menu visible"
+"TC-MOCK-005","Mockup Screens","/payees renders ""Manage Payees"" inside the shell","P3","UI","parallel","Brief","/payees","1. Login
+2. Open /payees","HTTP 200, heading contains ""Manage Payees"", drawer and user-menu visible"
+"TC-MOCK-006","Mockup Screens","/file-upload renders ""Bulk File Upload"" inside the shell","P3","UI","parallel","Brief","/file-upload","1. Login
+2. Open /file-upload","HTTP 200, heading contains ""Bulk File Upload"", drawer and user-menu visible"
+"TC-MOCK-007","Mockup Screens","/trade renders ""Trade Finance"" inside the shell","P3","UI","parallel","Brief","/trade","1. Login
+2. Open /trade","HTTP 200, heading contains ""Trade Finance"", drawer and user-menu visible"
+"TC-MOCK-008","Mockup Screens","/cash-mgmt renders ""Cash Management"" inside the shell","P3","UI","parallel","Brief","/cash-mgmt","1. Login
+2. Open /cash-mgmt","HTTP 200, heading contains ""Cash Management"", drawer and user-menu visible"
+"TC-MOCK-009","Mockup Screens","/forex renders ""Forex Deal"" inside the shell","P3","UI","parallel","Brief","/forex","1. Login
+2. Open /forex","HTTP 200, heading contains ""Forex Deal"", drawer and user-menu visible"
+"TC-MOCK-010","Mockup Screens","/reports renders ""Reports"" inside the shell","P3","UI","parallel","Brief","/reports","1. Login
+2. Open /reports","HTTP 200, heading contains ""Reports"", drawer and user-menu visible"
+"TC-MOCK-011","Mockup Screens","/settings renders ""Account Setting"" inside the shell","P3","UI","parallel","Brief","/settings","1. Login
+2. Open /settings","HTTP 200, heading contains ""Account Setting"", drawer and user-menu visible"
+"TC-MOCK-012","Mockup Screens","CASA table matches seeded accounts","P2","UI","parallel","Brief","1234567890, 9876543210, 5555000011","1. Login
+2. Open /accounts/casa","Rows show Operating Account USD 4,520,000.75; AED Collections AED 18,750,000.00; Payroll Account USD 980,000.00"
+"TC-MOCK-013","Mockup Screens","Deposits table matches seeded accounts","P3","UI","parallel","Brief","7001234567, 7009988776","1. Login
+2. Open /accounts/deposits","Fixed Deposit 12M USD 2,500,000.00 and Recurring Deposit AED 600,000.00 shown"
+"TC-MOCK-014","Mockup Screens","Loans table shows Term Loan Facility","P3","UI","parallel","Brief","8001112223","1. Login
+2. Open /accounts/loans","Term Loan Facility USD with balance 3,200,000.00 (negative) shown"
+"TC-DASH-001","Dashboard","Pending count matches backend pending transactions","P1","UI+API","stateful","Brief","-","1. Login
+2. Read pending-count
+3. GET /api/transactions?status=Pending Approval","pending-count equals number of Pending Approval rows from API"
+"TC-DASH-002","Dashboard","Payment Tracker mini shows ref, beneficiary, amount, status","P2","UI","parallel","Brief","-","1. Login
+2. Read dashboard-tracker","Headers REFERENCE, BENEFICIARY, AMOUNT, STATUS and at least one row with CBP/IBG ref"
+"TC-DASH-003","Dashboard","Pending count increments after a new submission","P1","UI+API","stateful","Brief","USD 1,000 adhoc payment","1. Read pending-count
+2. Submit a Cross-Border payment
+3. Return to Dashboard","pending-count increases by 1"
+"TC-DASH-004","Dashboard","Pending count decrements after approval","P1","UI+API","stateful","Brief","Payment from DASH-003","1. Read pending-count
+2. Approve the payment in Approvals
+3. Return to Dashboard","pending-count decreases by 1"
+"TC-DASH-005","Dashboard","Pending tile ""Open Payment Tracker"" opens Approvals","P2","UI","parallel","Live","-","1. Login
+2. Click ""Open Payment Tracker"" on tile-pending-approvals","URL is /approvals"
+"TC-DASH-006","Dashboard","Notifications bell opens a panel","P3","UI","parallel","AI Lens","-","1. Login
+2. Click topbar-notifications","A notifications panel or list becomes visible"
+"TC-RL-001","Routing Labels","Country US sets label ""Fedwire Code""","P1","UI","parallel","Brief","US","1. Open /payment/international
+2. Select bene-country US","routing-code-label = ""Fedwire Code"""
+"TC-RL-002","Routing Labels","Country CA sets label ""Sort Code""","P1","UI","parallel","Brief","CA","1. Open /payment/international
+2. Select bene-country CA","routing-code-label = ""Sort Code"""
+"TC-RL-003","Routing Labels","Country GB sets label ""Sort Code""","P1","UI","parallel","Brief","GB","1. Open /payment/international
+2. Select bene-country GB","routing-code-label = ""Sort Code"""
+"TC-RL-004","Routing Labels","Country NZ sets label ""Sort Code""","P1","UI","parallel","Brief","NZ","1. Open /payment/international
+2. Select bene-country NZ","routing-code-label = ""Sort Code"""
+"TC-RL-005","Routing Labels","Country IN sets label ""IFSC Code""","P1","UI","parallel","Brief","IN","1. Open /payment/international
+2. Select bene-country IN","routing-code-label = ""IFSC Code"""
+"TC-RL-006","Routing Labels","Country AU sets label ""BSB Code""","P1","UI","parallel","Brief","AU","1. Open /payment/international
+2. Select bene-country AU","routing-code-label = ""BSB Code"""
+"TC-RL-007","Routing Labels","Default label before country selected","P3","UI","parallel","Live","-","1. Open /payment/international","routing-code-label = ""Routing Code"""
+"TC-RL-008","Routing Labels","Label follows repeated country changes","P2","UI","parallel","Brief","US -> IN -> AU -> GB","1. Select US, IN, AU, GB in turn","Label is Fedwire Code, IFSC Code, BSB Code, Sort Code in turn"
+"TC-ACC-001","Accuity Lookup","US 021000021 autofills JPMorgan Chase","P1","UI","parallel","Brief","US / 021000021","1. Open /payment/international
+2. Select US
+3. Enter routing code 021000021
+4. Tab out","bank-name = ""JPMorgan Chase"", bank-address = ""New York, NY"", swift-bic = ""CHASUS33"", no routing-error"
+"TC-ACC-002","Accuity Lookup","US 026009593 autofills Bank of America","P1","UI","parallel","Brief","US / 026009593","1. Open /payment/international
+2. Select US
+3. Enter routing code 026009593
+4. Tab out","bank-name = ""Bank of America"", bank-address = ""New York, NY"", swift-bic = ""BOFAUS3N"", no routing-error"
+"TC-ACC-003","Accuity Lookup","IN HDFC0000123 autofills HDFC Bank","P1","UI","parallel","Brief","IN / HDFC0000123","1. Open /payment/international
+2. Select IN
+3. Enter routing code HDFC0000123
+4. Tab out","bank-name = ""HDFC Bank"", bank-address = ""Mumbai"", swift-bic = ""HDFCINBB"", no routing-error"
+"TC-ACC-004","Accuity Lookup","IN ICIC0000456 autofills ICICI Bank","P2","UI","parallel","Brief","IN / ICIC0000456","1. Open /payment/international
+2. Select IN
+3. Enter routing code ICIC0000456
+4. Tab out","bank-name = ""ICICI Bank"", bank-address = ""Mumbai"", swift-bic = ""ICICINBB"", no routing-error"
+"TC-ACC-005","Accuity Lookup","GB 20-00-00 autofills Barclays","P2","UI","parallel","Brief","GB / 20-00-00","1. Open /payment/international
+2. Select GB
+3. Enter routing code 20-00-00
+4. Tab out","bank-name = ""Barclays"", bank-address = ""London"", swift-bic = ""BARCGB22"", no routing-error"
+"TC-ACC-006","Accuity Lookup","GB 40-05-15 autofills HSBC","P2","UI","parallel","Brief","GB / 40-05-15","1. Open /payment/international
+2. Select GB
+3. Enter routing code 40-05-15
+4. Tab out","bank-name = ""HSBC"", bank-address = ""London"", swift-bic = ""HBUKGB4B"", no routing-error"
+"TC-ACC-007","Accuity Lookup","CA 000300 autofills Royal Bank of Canada","P2","UI","parallel","Brief","CA / 000300","1. Open /payment/international
+2. Select CA
+3. Enter routing code 000300
+4. Tab out","bank-name = ""Royal Bank of Canada"", bank-address = ""Toronto"", swift-bic = ""ROYCCAT2"", no routing-error"
+"TC-ACC-008","Accuity Lookup","NZ 010000 autofills ANZ Bank","P2","UI","parallel","Brief","NZ / 010000","1. Open /payment/international
+2. Select NZ
+3. Enter routing code 010000
+4. Tab out","bank-name = ""ANZ Bank"", bank-address = ""Auckland"", swift-bic = ""ANZBNZ22"", no routing-error"
+"TC-ACC-009","Accuity Lookup","AU 062-000 autofills Commonwealth Bank","P2","UI","parallel","Brief","AU / 062-000","1. Open /payment/international
+2. Select AU
+3. Enter routing code 062-000
+4. Tab out","bank-name = ""Commonwealth Bank"", bank-address = ""Sydney"", swift-bic = ""CTBAAU2S"", no routing-error"
+"TC-ACC-010","Accuity Lookup","AU 082-001 autofills NAB","P2","UI","parallel","Brief","AU / 082-001","1. Open /payment/international
+2. Select AU
+3. Enter routing code 082-001
+4. Tab out","bank-name = ""NAB"", bank-address = ""Melbourne"", swift-bic = ""NATAAU33"", no routing-error"
+"TC-ACC-011","Accuity Lookup","Invalid code US 000000 rejected","P1","UI","parallel","Brief","US / 000000","1. Open /payment/international
+2. Select US
+3. Enter 000000
+4. Tab out","routing-error = ""Routing Code not present or invalid."" and bank-name empty"
+"TC-ACC-012","Accuity Lookup","Invalid code US 999 rejected","P1","UI","parallel","Brief","US / 999","1. Open /payment/international
+2. Select US
+3. Enter 999
+4. Tab out","routing-error = ""Routing Code not present or invalid."" and bank-name empty"
+"TC-ACC-013","Accuity Lookup","Invalid code GB 12-34-56 rejected","P1","UI","parallel","Brief","GB / 12-34-56","1. Open /payment/international
+2. Select GB
+3. Enter 12-34-56
+4. Tab out","routing-error = ""Routing Code not present or invalid."" and bank-name empty"
+"TC-ACC-014","Accuity Lookup","Valid code with wrong country GB 021000021 rejected","P1","UI","parallel","Brief","GB / 021000021","1. Open /payment/international
+2. Select GB
+3. Enter 021000021
+4. Tab out","routing-error = ""Routing Code not present or invalid."" and bank-name empty"
+"TC-ACC-015","Accuity Lookup","Correcting an invalid code clears the error","P2","UI","parallel","AI Lens","US 000000 then 021000021","1. Enter invalid code
+2. Replace with valid code","routing-error disappears and bank fields autofill"
+"TC-ACC-016","Accuity Lookup","Bank name, address and BIC are read-only","P2","UI","parallel","Live","-","1. Open /payment/international","bank-name, bank-address, swift-bic are readonly"
+"TC-ACC-017","Accuity Lookup","Invalid code after valid one clears bank fields","P2","UI","parallel","Live","US 021000021 then 000000","1. Enter valid code
+2. Replace with invalid code","bank-name, swift-bic become empty and routing-error is shown"
+"TC-VAL-001","Cross-Border Validation","Empty form shows every required error","P1","UI","parallel","Brief","-","1. Open /payment/international
+2. Click Continue to Review","error-bene-name, error-bene-account, error-country, error-amount, error-currency and routing-error show their exact texts; URL unchanged"
+"TC-VAL-002","Cross-Border Validation","Only bene-name missing shows its error","P2","UI","parallel","Brief","All other fields valid","1. Fill a valid payment
+2. Leave bene-name empty
+3. Click Continue","error-bene-name = ""Beneficiary Name is required."" and no navigation to review"
+"TC-VAL-003","Cross-Border Validation","Only bene-account missing shows its error","P2","UI","parallel","Brief","All other fields valid","1. Fill a valid payment
+2. Leave bene-account empty
+3. Click Continue","error-bene-account = ""Beneficiary Account / IBAN is required."" and no navigation to review"
+"TC-VAL-004","Cross-Border Validation","Only bene-country missing shows its error","P2","UI","parallel","Brief","All other fields valid","1. Fill a valid payment
+2. Leave bene-country empty
+3. Click Continue","error-country = ""Beneficiary Bank Country is required."" and no navigation to review"
+"TC-VAL-005","Cross-Border Validation","Only currency missing shows its error","P2","UI","parallel","Brief","All other fields valid","1. Fill a valid payment
+2. Leave currency empty
+3. Click Continue","error-currency = ""Transfer Currency is required."" and no navigation to review"
+"TC-VAL-006","Cross-Border Validation","Amount 0 rejected","P1","UI","parallel","Brief","amount 0","1. Fill valid payment with amount 0
+2. Continue","error-amount = ""Transfer Amount must be a number greater than 0."""
+"TC-VAL-007","Cross-Border Validation","Negative amount rejected","P1","UI","parallel","AI Lens","amount -5","1. Fill valid payment with amount -5
+2. Continue","error-amount = ""Transfer Amount must be a number greater than 0."""
+"TC-VAL-008","Cross-Border Validation","Smallest positive amount 0.01 accepted","P3","UI","parallel","AI Lens","amount 0.01","1. Fill valid payment with amount 0.01
+2. Continue","Navigates to /payment/review"
+"TC-VAL-009","Cross-Border Validation","Errors clear once corrected and review opens","P2","UI","parallel","AI Lens","-","1. Click Continue on empty form
+2. Fill all fields validly
+3. Continue","No error-* elements remain and URL is /payment/review"
+"TC-VAL-010","Cross-Border Validation","Beneficiary name rejects markup","P3","UI","parallel","AI Lens","<script>alert(1)</script>","1. Enter markup as beneficiary name
+2. Continue","Input rejected with a validation message (no navigation to review)"
+"TC-CBP-001","Cross-Border Payment","Adhoc US payment reaches review with derived intermediary","P1","UI","parallel","Brief","US 021000021 USD 40000, intermediary blank","1. Fill adhoc payment
+2. Continue","URL /payment/review, review-bene-name matches, review-intermediary-bic = ""CITIUS33"", review-amount = ""40000 USD"""
+"TC-CBP-002","Cross-Border Payment","Submit for approval shows success with CBP ref","P1","UI","parallel","Brief","As CBP-001","1. Complete review
+2. Submit for Approval","success-message = ""Payment Submitted for Approval"", txn-ref matches ^CBP\d{10}$, txn-status = ""Pending Approval"""
+"TC-CBP-003","Cross-Border Payment","View Transaction opens tracker with the new row","P1","UI","parallel","Brief","Ref from CBP-002","1. On success page click btn-view-transaction","URL /approvals and a txn-row with the captured ref exists, status Pending Approval"
+"TC-CBP-004","Cross-Border Payment","Approving the new payment marks it Processed","P1","UI","parallel","Brief","Ref from submission","1. In Approvals click btn-approve on the new row","Row txn-status = ""Processed"" and btn-approve no longer present"
+"TC-CBP-005","Cross-Border Payment","Blank intermediary derives DEUTDEFF for EUR","P2","UI","parallel","Brief","EUR, intermediary blank","1. Fill adhoc payment
+2. Choose currency EUR
+3. Continue","review-intermediary-bic = ""DEUTDEFF"""
+"TC-CBP-006","Cross-Border Payment","Blank intermediary derives HSBCGB2L for GBP","P2","UI","parallel","Brief","GBP, intermediary blank","1. Fill adhoc payment
+2. Choose currency GBP
+3. Continue","review-intermediary-bic = ""HSBCGB2L"""
+"TC-CBP-007","Cross-Border Payment","Blank intermediary derives ATHNAEAD for AED","P2","UI","parallel","Brief","AED, intermediary blank","1. Fill adhoc payment
+2. Choose currency AED
+3. Continue","review-intermediary-bic = ""ATHNAEAD"""
+"TC-CBP-008","Cross-Border Payment","Blank intermediary derives SBININBB for INR","P2","UI","parallel","Brief","INR, intermediary blank","1. Fill adhoc payment
+2. Choose currency INR
+3. Continue","review-intermediary-bic = ""SBININBB"""
+"TC-CBP-009","Cross-Border Payment","User-entered intermediary BIC is kept","P2","UI","parallel","Live","intermediary BNPAFRPP","1. Fill payment with intermediary BNPAFRPP
+2. Continue","review-intermediary-bic = ""BNPAFRPP"""
+"TC-CBP-010","Cross-Border Payment","Back from review keeps entered values","P2","UI","parallel","Live","-","1. Reach review
+2. Click btn-back","Initiate screen shows same name, account, amount and currency"
+"TC-CBP-011","Cross-Border Payment","Review shows every entered detail","P2","UI","parallel","Live","IN HDFC0000123 INR, pay via Wire, remarks","1. Fill payment
+2. Continue","Review shows account, country, IFSC Code label and code, HDFC Bank, HDFCINBB, Wire and remarks"
+"TC-CBP-012","Cross-Border Payment","Pay Via offers SWIFT, Wire, Correspondent","P3","UI","parallel","Live","-","1. Open initiate screen
+2. Read pay-via options","Options are exactly SWIFT, Wire, Correspondent; default SWIFT"
+"TC-CBP-013","Cross-Border Payment","Submitted payment is stored with the entered fields","P1","UI+API","parallel","Brief","GB 40-05-15 GBP 1234.5 Correspondent","1. Submit payment via UI
+2. GET /api/transactions?status=All","Row with captured ref has the same beneficiary, amount, currency, bank, SWIFT, payVia"
+"TC-CBP-014","Cross-Border Payment","Two submissions get different reference numbers","P2","UI","parallel","Brief","Two payments","1. Submit two payments","Both refs match ^CBP\d{10}$ and differ"
+"TC-SB-001","Saved Beneficiary","Saved list shows seeded beneficiaries","P2","UI","parallel","Brief","-","1. Choose bene-type-saved
+2. Read saved-bene-select","Options include ""ACME Trading LLC (GB)"" and ""Global Imports Inc (US)"""
+"TC-SB-002","Saved Beneficiary","ACME Trading LLC prefills GB / Barclays","P1","UI","parallel","Brief","ACME Trading LLC","1. Choose saved
+2. Select ACME Trading LLC","bene-account DE89370400440532013000, country GB, routing 20-00-00, Sort Code label, Barclays, London, BARCGB22"
+"TC-SB-003","Saved Beneficiary","Global Imports Inc prefills US / JPMorgan","P2","UI","parallel","Brief","Global Imports Inc","1. Choose saved
+2. Select Global Imports Inc","bene-account US1234567890, country US, Fedwire Code, 021000021, JPMorgan Chase, CHASUS33"
+"TC-SB-004","Saved Beneficiary","Prefilled saved fields are read-only","P2","UI","parallel","Live","ACME Trading LLC","1. Select saved beneficiary","bene-name, bene-account, routing-code are read-only or disabled"
+"TC-SB-005","Saved Beneficiary","Saved beneficiary end to end creates CBP ref","P1","UI","parallel","Brief","ACME, GBP 500","1. Select ACME
+2. Amount 500 GBP
+3. Continue
+4. Submit","Review shows HSBCGB2L intermediary; success ref ^CBP\d{10}$"
+"TC-SB-006","Saved Beneficiary","Switching back to adhoc clears saved values","P2","UI","parallel","AI Lens","ACME then adhoc","1. Select ACME
+2. Choose bene-type-adhoc","bene-name and bene-account are empty and editable"
+"TC-DR-001","Drafts","Seeded Sunrise Textiles draft present after reset","P1","UI","seed","Brief","-","1. Reset
+2. Open /drafts","A draft-row contains ""Sunrise Textiles Ltd"" and ""GBP 25000"""
+"TC-DR-002","Drafts","Save as Draft shows toast","P1","UI","parallel","Brief","Partial adhoc form","1. Fill some fields
+2. Click btn-save-draft","draft-toast visible with ""Draft saved."""
+"TC-DR-003","Drafts","Saved draft listed with label","P1","UI","parallel","Live","Unique name, INR 123","1. Save draft
+2. Open /drafts","draft-row with ""<name> — INR 123"" exists"
+"TC-DR-004","Drafts","Open draft repopulates every field","P1","UI","parallel","Brief","IN HDFC0000123 INR 123 Wire remarks","1. Save full draft
+2. Open it from /drafts","URL has ?draft=<id>; every field incl. label IFSC Code, HDFC Bank, HDFCINBB, pay-via, remarks restored"
+"TC-DR-005","Drafts","Delete removes the draft row","P1","UI","parallel","Brief","Own draft","1. Save draft
+2. Delete it in /drafts","Row no longer present after reload"
+"TC-DR-006","Drafts","Delete asks for confirmation","P3","UI","parallel","AI Lens","Own draft","1. Click btn-delete-draft","A confirmation dialog is shown before deletion"
+"TC-DR-007","Drafts","Seeded draft opens with GB / HSBC values","P2","UI","parallel","Brief","Sunrise Textiles Ltd","1. Open Sunrise draft","bene-name Sunrise Textiles Ltd, GB, 40-05-15, HSBC, HBUKGB4B, GBP, 25000"
+"TC-DR-008","Drafts","Opened draft can be submitted","P2","UI","parallel","Live","Own draft","1. Open own complete draft
+2. Continue
+3. Submit","Success with ^CBP\d{10}$ ref"
+"TC-APR-001","Approvals & Tracker","Seeded transactions have expected status","P1","UI","seed","Brief","CBP1000000001, CBP2000000002","1. Reset
+2. Open /approvals","CBP1000000001 Pending Approval; CBP2000000002 Processed"
+"TC-APR-002","Approvals & Tracker","Filter Pending Approval shows only pending","P1","UI","parallel","Brief","-","1. Select status-filter Pending Approval","Every visible txn-status = Pending Approval"
+"TC-APR-003","Approvals & Tracker","Filter Processed shows only processed","P1","UI","parallel","Brief","-","1. Select status-filter Processed","Every visible txn-status = Processed and CBP2000000002 present"
+"TC-APR-004","Approvals & Tracker","Filter All shows both statuses","P2","UI","parallel","Brief","-","1. Select status-filter All","Both Pending Approval and Processed rows visible"
+"TC-APR-005","Approvals & Tracker","Approve shown only on pending rows","P2","UI","parallel","Live","-","1. Open /approvals","Processed rows have no btn-approve; every row has btn-download"
+"TC-APR-006","Approvals & Tracker","Download returns the row as JSON","P1","UI","parallel","Brief","CBP2000000002","1. Click btn-download on CBP2000000002","File CBP2000000002.json downloaded; JSON refNumber, amount 42000, currency USD, status Processed"
+"TC-APR-007","Approvals & Tracker","Tracker columns are complete","P3","UI","parallel","Live","-","1. Read txn-table headers","REFERENCE NUMBER, BENEFICIARY NAME, AMOUNT, CURRENCY, COUNTRY, STATUS, CREATED ON, ACTIONS"
+"TC-APR-008","Approvals & Tracker","Approved payment moves to Processed filter","P2","UI","parallel","Brief","Own payment","1. Create payment (API)
+2. Approve in UI
+3. Filter Processed","Ref visible under Processed and absent under Pending Approval"
+"TC-IBG-001","IBG Pre-Existing Deal","Screen loads with accounts and internal beneficiaries","P2","UI","parallel","Brief","-","1. Open /payment/ibg-deal","from-account lists 1234567890 and 9876543210; ibg-beneficiary lists Athena Subsidiary FZE and Athena Logistics DMCC"
+"TC-IBG-002","IBG Pre-Existing Deal","Empty submit shows all IBG errors","P1","UI","parallel","Brief","-","1. Click Continue on empty form","error-from-account, error-deal-id, error-deal-rate, error-amount, error-currency show exact texts"
+"TC-IBG-003","IBG Pre-Existing Deal","Missing Deal ID only","P2","UI","parallel","Brief","All but deal ID","1. Fill all except deal-id
+2. Continue","error-deal-id = ""Deal ID is required."""
+"TC-IBG-004","IBG Pre-Existing Deal","Missing From Account only","P2","UI","parallel","Brief","All but from account","1. Fill all except from-account
+2. Continue","error-from-account = ""From Account is required."""
+"TC-IBG-005","IBG Pre-Existing Deal","Deal rate 0 rejected","P2","UI","parallel","Brief","rate 0","1. Fill valid deal with rate 0
+2. Continue","error-deal-rate = ""Deal Rate must be a number greater than 0."""
+"TC-IBG-006","IBG Pre-Existing Deal","Negative deal rate rejected","P2","UI","parallel","Live","rate -1","1. Fill valid deal with rate -1
+2. Continue","error-deal-rate = ""Deal Rate must be a number greater than 0."""
+"TC-IBG-007","IBG Pre-Existing Deal","Calc on Debit Account Currency","P1","UI","parallel","Brief","From USD 1234567890, DEAL001, 3.67, AED 1000","1. Fill deal
+2. Rate Applied = Debit Account Currency","calculated-amount = 272.48 and deal-rate-line = ""1 USD = 3.67 AED"""
+"TC-IBG-008","IBG Pre-Existing Deal","Calc on Transfer Amount Currency","P1","UI","parallel","Brief","As IBG-007","1. Switch Rate Applied to Transfer Amount Currency","calculated-amount = 3670 and deal-rate-line = ""1 USD = 3.67 AED"""
+"TC-IBG-009","IBG Pre-Existing Deal","Calculated amount shows a currency","P3","UI","parallel","AI Lens","As IBG-007","1. Fill deal
+2. Read calculated-amount","Calculated amount includes its currency code"
+"TC-IBG-010","IBG Pre-Existing Deal","Review shows all deal details","P2","UI","parallel","Live","As IBG-007 + expiry 2027-12-31, John Smith","1. Continue","Review lists From Account, beneficiary, DEAL001, 2027-12-31, John Smith, rate 3.67, amount, calculated amount, rate line"
+"TC-IBG-011","IBG Pre-Existing Deal","Back from review keeps deal values","P3","UI","parallel","Live","-","1. Continue
+2. Click btn-back","deal-id still DEAL001 and amount 1000"
+"TC-IBG-012","IBG Pre-Existing Deal","Submit IBG creates IBG ref","P1","UI","parallel","Brief","As IBG-010","1. Continue
+2. Submit for Approval","txn-ref matches ^IBG\d{10}$; txn-status Pending Approval"
+"TC-IBG-013","IBG Pre-Existing Deal","IBG payment visible and approvable in tracker","P2","UI","parallel","Brief","Ref from submission","1. Open /approvals
+2. Approve IBG row","Row present then status Processed"
+"TC-IBG-014","IBG Pre-Existing Deal","Expired deal expiry rejected","P2","UI","parallel","AI Lens","expiry 2020-01-01","1. Fill deal with past expiry
+2. Continue","A validation error blocks review"
+"TC-PER-001","Persistence","Payment visible after reload","P1","UI","parallel","Brief","Own payment","1. Submit payment
+2. Reload /approvals","Row with captured ref still present"
+"TC-PER-002","Persistence","Payment visible from a fresh browser session","P1","UI","parallel","Brief","Own payment","1. Submit payment
+2. New browser context, login
+3. Open /approvals","Row with captured ref present"
+"TC-PER-003","Persistence","Draft visible from a fresh browser session","P2","UI","parallel","Brief","Own draft","1. Save draft
+2. New context, login
+3. Open /drafts","Draft row present"
+"TC-API-001","API Contract","GET /api/health","P1","API","parallel","Brief","-","1. Call GET /api/health","{ok:true, service:""abdx-backend"", db:""up""}"
+"TC-API-002","API Contract","POST /api/auth/login valid","P1","API","parallel","Brief","-","1. Call POST /api/auth/login","200 with token, userId, username MASHREQCORP, partyName, branchName"
+"TC-API-003","API Contract","POST /api/auth/login invalid","P1","API","parallel","Brief","-","1. Call POST /api/auth/login","401 {error:""Invalid username or password.""}"
+"TC-API-004","API Contract","GET /api/accuity all 10 seeded codes","P1","API","parallel","Brief","-","1. Call GET /api/accuity","200 with exact bankName, bankAddress, swiftBic for each"
+"TC-API-005","API Contract","GET /api/accuity invalid code","P1","API","parallel","Brief","-","1. Call GET /api/accuity","404 {error:""Routing Code not present or invalid.""}"
+"TC-API-006","API Contract","GET /api/accuity valid code wrong country","P2","API","parallel","Brief","-","1. Call GET /api/accuity","404 with the same exact error"
+"TC-API-007","API Contract","GET /api/accuity/intermediary all 5 currencies","P1","API","parallel","Brief","-","1. Call GET /api/accuity/intermediary","USD CITIUS33, EUR DEUTDEFF, GBP HSBCGB2L, AED ATHNAEAD, INR SBININBB"
+"TC-API-008","API Contract","GET /api/deal-calc Debit Account Currency","P1","API","parallel","Brief","-","1. Call GET /api/deal-calc","calculatedAmount 272.48, formattedRate ""1 USD = 3.67 AED"" (debit USD, transfer AED)"
+"TC-API-009","API Contract","GET /api/deal-calc Transfer Amount Currency","P2","API","parallel","Brief","-","1. Call GET /api/deal-calc","calculatedAmount 3670"
+"TC-API-010","API Contract","GET /api/beneficiaries?kind=CROSS_BORDER","P2","API","parallel","Brief","-","1. Call GET /api/beneficiaries?kind=CROSS_BORDER","ACME Trading LLC and Global Imports Inc with seeded details"
+"TC-API-011","API Contract","GET /api/beneficiaries?kind=INTERNAL","P2","API","parallel","Brief","-","1. Call GET /api/beneficiaries?kind=INTERNAL","Athena Subsidiary FZE and Athena Logistics DMCC, AED"
+"TC-API-012","API Contract","POST /api/transactions then approve","P1","API","parallel","Brief","-","1. Call POST /api/transactions","ref ^CBP\d{10}$, status Pending Approval; approve gives Processed"
+"TC-API-013","API Contract","GET /api/transactions?status=Pending Approval","P2","API","parallel","Brief","-","1. Call GET /api/transactions?status=Pending","Only Pending Approval rows returned"
+"TC-API-014","API Contract","Drafts CRUD","P1","API","parallel","Brief","-","1. Call Drafts CRUD","POST creates, GET :id returns, DELETE removes, GET :id then 404"
+"TC-API-015","API Contract","GET /api/transactions/:id/download","P2","API","parallel","Brief","-","1. Call GET /api/transactions/:id/download","JSON of the row with matching refNumber"
+"TC-API-016","API Contract","POST /api/auth/logout","P3","API","parallel","Brief","-","1. Call POST /api/auth/logout","2xx response"
+"TC-API-017","API Contract","POST /api/reset response shape","P1","API","seed","Brief","-","1. POST /api/reset","{ok:true, resetAt:<ISO timestamp>}; afterwards seeds restored"
+"TC-SEC-001","Security & Robustness","Transactions API rejects calls without a token","P1","API","parallel","AI Lens","No Authorization header","1. GET /api/transactions?status=All with no token","401 or 403"
+"TC-SEC-002","Security & Robustness","Drafts and beneficiaries APIs reject calls without a token","P1","API","parallel","AI Lens","No token","1. GET /api/drafts
+2. GET /api/beneficiaries?kind=CROSS_BORDER","401 or 403 for both"
+"TC-SEC-003","Security & Robustness","Logout clears payment form data from sessionStorage","P2","UI","parallel","AI Lens","Partially filled form","1. Fill bene name
+2. Logout
+3. Inspect sessionStorage and log back in","No beneficiary data remains; initiate form is empty"
+"TC-SEC-004","Security & Robustness","Corporate Maker is not offered Approve","P2","UI","parallel","AI Lens","MASHREQCORP (role Corporate Maker)","1. Open /approvals as maker","btn-approve not shown to a maker (segregation of duties)"
+"TC-SEC-005","Security & Robustness","Transfer Money Continue does something","P3","UI","parallel","AI Lens","/payment/transfer","1. Open /payment/transfer
+2. Fill amount
+3. Click Continue","Navigates to a review step or shows validation"
+"TC-SEC-006","Security & Robustness","No horizontal scroll at phone width","P3","UI","parallel","AI Lens","390x844 viewport","1. Open /dashboard and /payment/international at 390px","document scrollWidth <= viewport width"
+"TC-SEC-007","Security & Robustness","Canada and New Zealand use correct routing terms","P3","UI","parallel","AI Lens","CA, NZ","1. Select CA then NZ","CA shows Transit Number (or Institution/Transit), NZ shows Bank Code, not ""Sort Code"" (banking accuracy)"
+"TC-SEC-008","Security & Robustness","Saved GB payee has a GB IBAN","P3","API","parallel","AI Lens","ACME Trading LLC","1. GET /api/beneficiaries?kind=CROSS_BORDER","ACME (country GB) IBAN starts with GB"

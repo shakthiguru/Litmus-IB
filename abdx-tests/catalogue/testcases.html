@@ -1,0 +1,797 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ABDX Test Catalogue</title><style>
+:root{--bg:#f7f8fa;--card:#fff;--fg:#1b1f24;--mut:#5b6573;--line:#e3e6ea;--acc:#1f5fbf;--p1:#b42318;--p2:#b54708;--p3:#475467;--chip:#eef2f7}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0f1216;--card:#171b21;--fg:#e6e9ed;--mut:#9aa4b2;--line:#2a3039;--acc:#6ea0ff;--p1:#f97066;--p2:#fdb022;--p3:#98a2b3;--chip:#222831}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+.wrap{max-width:1200px;margin:0 auto;padding:24px 16px}h1{font-size:22px;margin:0 0 4px}.sub{color:var(--mut);margin:0 0 18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:14px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:14px}.kpi{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px}.kpi b{display:block;font-size:24px}.kpi span{color:var(--mut);font-size:12px}
+.chip{display:inline-block;background:var(--chip);border-radius:999px;padding:2px 10px;margin:3px 4px 3px 0;font-size:12px}.lbl{font-size:12px;color:var(--mut);text-transform:uppercase;letter-spacing:.04em;margin:6px 0 2px}
+.filters{display:flex;flex-wrap:wrap;gap:8px}.filters input,.filters select{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:6px 8px;font:inherit}.filters input{flex:1;min-width:180px}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse;background:var(--card)}th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}th{font-size:12px;color:var(--mut);text-transform:uppercase;position:sticky;top:0;background:var(--card)}
+td.id{font-family:ui-monospace,Menlo,monospace;white-space:nowrap;font-size:12px}details summary{cursor:pointer;color:var(--acc);font-size:12px;margin-top:2px}.d{font-size:13px;color:var(--mut);padding:6px 0}.d ol{margin:6px 0;padding-left:20px}.k{font-weight:600;color:var(--fg)}
+.p{font-weight:700;font-size:12px}.P1{color:var(--p1)}.P2{color:var(--p2)}.P3{color:var(--p3)}.m{font-size:12px;border:1px solid var(--line);border-radius:4px;padding:0 6px}
+.note li{margin:4px 0}#n{color:var(--mut);font-size:12px;margin:8px 0}</style></head><body><div class="wrap">
+<h1>ABDX Test Catalogue</h1><p class="sub">Step 1 for review. Application: https://abdx.vercel.app. Built from the testing brief, the AI Lens report and a live walk of the app on 17 Nov 2026.</p>
+<div class="kpis"><div class="kpi"><b>154</b><span>Test cases</span></div><div class="kpi"><b>15</b><span>Modules</span></div><div class="kpi"><b>59</b><span>P1 critical</span></div><div class="kpi"><b>148</b><span>Fully parallel</span></div></div>
+<div class="card"><div class="lbl">By module</div><span class="chip"><b>12</b> Authentication</span><span class="chip"><b>9</b> Navigation &amp; Shell</span><span class="chip"><b>14</b> Mockup Screens</span><span class="chip"><b>6</b> Dashboard</span><span class="chip"><b>8</b> Routing Labels</span><span class="chip"><b>17</b> Accuity Lookup</span><span class="chip"><b>10</b> Cross-Border Validation</span><span class="chip"><b>14</b> Cross-Border Payment</span><span class="chip"><b>6</b> Saved Beneficiary</span><span class="chip"><b>8</b> Drafts</span><span class="chip"><b>8</b> Approvals &amp; Tracker</span><span class="chip"><b>14</b> IBG Pre-Existing Deal</span><span class="chip"><b>3</b> Persistence</span><span class="chip"><b>17</b> API Contract</span><span class="chip"><b>8</b> Security &amp; Robustness</span><div class="lbl">By priority</div><span class="chip"><b>59</b> P1</span><span class="chip"><b>63</b> P2</span><span class="chip"><b>32</b> P3</span><div class="lbl">By type</div><span class="chip"><b>130</b> UI</span><span class="chip"><b>4</b> UI+API</span><span class="chip"><b>20</b> API</span><div class="lbl">By source</div><span class="chip"><b>111</b> Brief</span><span class="chip"><b>24</b> Live</span><span class="chip"><b>19</b> AI Lens</span><div class="lbl">By run mode</div><span class="chip"><b>148</b> parallel</span><span class="chip"><b>3</b> stateful</span><span class="chip"><b>3</b> seed</span></div>
+<div class="card note"><div class="lbl">How the run will be ordered</div><ul>
+<li><b>seed</b>: runs first, one after another, right after <code>POST /api/reset</code>. These check the original seed data before anything changes it.</li>
+<li><b>parallel</b>: runs in as many browsers as the machine allows. Each test creates its own data and finds it by the captured reference number.</li>
+<li><b>stateful</b>: runs last, one after another, because it checks global counters (dashboard pending count) that parallel tests would change.</li>
+<li>Source <b>AI Lens</b> cases come from that report's suspected defects, so several are expected to fail today. That is the point: they confirm or clear each finding on the live app.</li></ul></div>
+<div class="card filters"><input id="q" placeholder="Search ID, title, expected..."><select id="fm"><option value="">All modules</option><option>Authentication</option><option>Navigation &amp; Shell</option><option>Mockup Screens</option><option>Dashboard</option><option>Routing Labels</option><option>Accuity Lookup</option><option>Cross-Border Validation</option><option>Cross-Border Payment</option><option>Saved Beneficiary</option><option>Drafts</option><option>Approvals &amp; Tracker</option><option>IBG Pre-Existing Deal</option><option>Persistence</option><option>API Contract</option><option>Security &amp; Robustness</option></select><select id="fp"><option value="">All priorities</option><option>P1</option><option>P2</option><option>P3</option></select><select id="fs"><option value="">All sources</option><option>Brief</option><option>Live</option><option>AI Lens</option></select></div>
+<div id="n"></div><div class="tw"><table><thead><tr><th>ID</th><th>Test case</th><th>Module</th><th>Pri</th><th>Type</th><th>Mode</th><th>Source</th></tr></thead><tbody id="tb"><tr data-mod="Authentication" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-AUTH-001</td><td>Valid login lands on Dashboard<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> MASHREQCORP / Test@123</div><ol><li>Open /login</li><li>Enter username and password</li><li>Click Login</li></ol>
+<div><span class="k">Expected</span> URL is /dashboard and tile-pending-approvals is visible</div></div></details></td>
+<td>Authentication</td><td><span class="p P1">P1</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Authentication" data-pri="P2" data-src="Brief" data-mode="parallel">
+<td class="id">TC-AUTH-002</td><td>Username is case-insensitive<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> mashreqcorp / Test@123</div><ol><li>Open /login</li><li>Enter lowercase username and valid password</li><li>Click Login</li></ol>
+<div><span class="k">Expected</span> URL is /dashboard</div></div></details></td>
+<td>Authentication</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Authentication" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-AUTH-003</td><td>Wrong password shows exact error<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> MASHREQCORP / Wrong@123</div><ol><li>Open /login</li><li>Enter valid username, wrong password</li><li>Click Login</li></ol>
+<div><span class="k">Expected</span> login-error = &quot;Invalid username or password.&quot; and URL stays /login</div></div></details></td>
+<td>Authentication</td><td><span class="p P1">P1</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Authentication" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-AUTH-004</td><td>Unknown user shows exact error<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> NOUSER / Test@123</div><ol><li>Open /login</li><li>Enter unknown username</li><li>Click Login</li></ol>
+<div><span class="k">Expected</span> login-error = &quot;Invalid username or password.&quot;</div></div></details></td>
+<td>Authentication</td><td><span class="p P1">P1</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Authentication" data-pri="P2" data-src="Live" data-mode="parallel">
+<td class="id">TC-AUTH-005</td><td>Empty credentials show exact error<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> blank / blank</div><ol><li>Open /login</li><li>Click Login without input</li></ol>
+<div><span class="k">Expected</span> login-error = &quot;Invalid username or password.&quot;</div></div></details></td>
+<td>Authentication</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Live</td></tr>
+<tr data-mod="Authentication" data-pri="P3" data-src="Live" data-mode="parallel">
+<td class="id">TC-AUTH-006</td><td>Password field is masked<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Open /login</li><li>Inspect login-password</li></ol>
+<div><span class="k">Expected</span> Input type is &quot;password&quot;</div></div></details></td>
+<td>Authentication</td><td><span class="p P3">P3</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Live</td></tr>
+<tr data-mod="Authentication" data-pri="P2" data-src="Live" data-mode="parallel">
+<td class="id">TC-AUTH-007</td><td>Top bar shows user, branch and party<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> Logged in session</div><ol><li>Login</li><li>Read top bar</li></ol>
+<div><span class="k">Expected</span> user-menu contains MASHREQCORP, topbar-branch = &quot;Downtown Branch&quot;, topbar-party = &quot;Athena Corporate Ltd&quot;</div></div></details></td>
+<td>Authentication</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Live</td></tr>
+<tr data-mod="Authentication" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-AUTH-008</td><td>Logout returns to login<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> Logged in session</div><ol><li>Login</li><li>Open user-menu</li><li>Click btn-logout</li></ol>
+<div><span class="k">Expected</span> URL is /login</div></div></details></td>
+<td>Authentication</td><td><span class="p P1">P1</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Authentication" data-pri="P1" data-src="Live" data-mode="parallel">
+<td class="id">TC-AUTH-009</td><td>Protected route blocked after logout<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Login then logout</li><li>Open /dashboard directly</li></ol>
+<div><span class="k">Expected</span> Redirected to /login</div></div></details></td>
+<td>Authentication</td><td><span class="p P1">P1</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Live</td></tr>
+<tr data-mod="Authentication" data-pri="P1" data-src="Live" data-mode="parallel">
+<td class="id">TC-AUTH-010</td><td>Deep link without session redirects to login<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>With no session, open /approvals</li></ol>
+<div><span class="k">Expected</span> Redirected to /login</div></div></details></td>
+<td>Authentication</td><td><span class="p P1">P1</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Live</td></tr>
+<tr data-mod="Authentication" data-pri="P2" data-src="Live" data-mode="parallel">
+<td class="id">TC-AUTH-011</td><td>Session survives page reload<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> Logged in session</div><ol><li>Login</li><li>Reload /dashboard</li></ol>
+<div><span class="k">Expected</span> Still on /dashboard with user-menu visible</div></div></details></td>
+<td>Authentication</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Live</td></tr>
+<tr data-mod="Authentication" data-pri="P3" data-src="Live" data-mode="parallel">
+<td class="id">TC-AUTH-012</td><td>Root URL redirects unauthenticated user to login<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>With no session, open /</li></ol>
+<div><span class="k">Expected</span> Redirected to /login</div></div></details></td>
+<td>Authentication</td><td><span class="p P3">P3</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Live</td></tr>
+<tr data-mod="Navigation &amp; Shell" data-pri="P2" data-src="Live" data-mode="parallel">
+<td class="id">TC-NAV-001</td><td>Drawer lists Accounts and Payments sections<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Login</li><li>Read drawer</li></ol>
+<div><span class="k">Expected</span> Drawer contains ACCOUNTS, PAYMENTS, International Payment, Pre-Existing Deal (IBG), Payment Tracker, Drafts</div></div></details></td>
+<td>Navigation &amp; Shell</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Live</td></tr>
+<tr data-mod="Navigation &amp; Shell" data-pri="P2" data-src="Brief" data-mode="parallel">
+<td class="id">TC-NAV-002</td><td>Menu menu-item-dashboard navigates to /dashboard<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Login</li><li>Start on a different page</li><li>Click menu-item-dashboard</li></ol>
+<div><span class="k">Expected</span> URL is /dashboard</div></div></details></td>
+<td>Navigation &amp; Shell</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Navigation &amp; Shell" data-pri="P2" data-src="Brief" data-mode="parallel">
+<td class="id">TC-NAV-003</td><td>Menu menu-item-intl-payment navigates to /payment/international<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Login</li><li>Start on a different page</li><li>Click menu-item-intl-payment</li></ol>
+<div><span class="k">Expected</span> URL is /payment/international</div></div></details></td>
+<td>Navigation &amp; Shell</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Navigation &amp; Shell" data-pri="P2" data-src="Brief" data-mode="parallel">
+<td class="id">TC-NAV-004</td><td>Menu menu-item-ibg-deal navigates to /payment/ibg-deal<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Login</li><li>Start on a different page</li><li>Click menu-item-ibg-deal</li></ol>
+<div><span class="k">Expected</span> URL is /payment/ibg-deal</div></div></details></td>
+<td>Navigation &amp; Shell</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Navigation &amp; Shell" data-pri="P2" data-src="Brief" data-mode="parallel">
+<td class="id">TC-NAV-005</td><td>Menu menu-item-approvals navigates to /approvals<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Login</li><li>Start on a different page</li><li>Click menu-item-approvals</li></ol>
+<div><span class="k">Expected</span> URL is /approvals</div></div></details></td>
+<td>Navigation &amp; Shell</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Navigation &amp; Shell" data-pri="P2" data-src="Brief" data-mode="parallel">
+<td class="id">TC-NAV-006</td><td>Menu menu-item-drafts navigates to /drafts<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Login</li><li>Start on a different page</li><li>Click menu-item-drafts</li></ol>
+<div><span class="k">Expected</span> URL is /drafts</div></div></details></td>
+<td>Navigation &amp; Shell</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Navigation &amp; Shell" data-pri="P3" data-src="Brief" data-mode="parallel">
+<td class="id">TC-NAV-007</td><td>Menu toggle collapses and restores the drawer<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Login</li><li>Click menu-toggle</li><li>Click menu-toggle again</li></ol>
+<div><span class="k">Expected</span> Drawer state changes on first click and returns to visible on second</div></div></details></td>
+<td>Navigation &amp; Shell</td><td><span class="p P3">P3</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Navigation &amp; Shell" data-pri="P3" data-src="Brief" data-mode="parallel">
+<td class="id">TC-NAV-008</td><td>Payments menu group has data-testid menu-item-payments<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Login</li><li>Locate menu-item-payments</li></ol>
+<div><span class="k">Expected</span> Element with data-testid menu-item-payments exists (listed in brief)</div></div></details></td>
+<td>Navigation &amp; Shell</td><td><span class="p P3">P3</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Navigation &amp; Shell" data-pri="P3" data-src="AI Lens" data-mode="parallel">
+<td class="id">TC-NAV-009</td><td>Unknown route shows a not-found page<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> /no-such-page</div><ol><li>Login</li><li>Open /no-such-page</li></ol>
+<div><span class="k">Expected</span> A not-found message is shown (app must not silently show Dashboard)</div></div></details></td>
+<td>Navigation &amp; Shell</td><td><span class="p P3">P3</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>AI Lens</td></tr>
+<tr data-mod="Mockup Screens" data-pri="P3" data-src="Brief" data-mode="parallel">
+<td class="id">TC-MOCK-001</td><td>/accounts/casa renders &quot;Current &amp; Savings Accounts&quot; inside the shell<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> /accounts/casa</div><ol><li>Login</li><li>Open /accounts/casa</li></ol>
+<div><span class="k">Expected</span> HTTP 200, heading contains &quot;Current &amp; Savings Accounts&quot;, drawer and user-menu visible</div></div></details></td>
+<td>Mockup Screens</td><td><span class="p P3">P3</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Mockup Screens" data-pri="P3" data-src="Brief" data-mode="parallel">
+<td class="id">TC-MOCK-002</td><td>/accounts/deposits renders &quot;Deposits&quot; inside the shell<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> /accounts/deposits</div><ol><li>Login</li><li>Open /accounts/deposits</li></ol>
+<div><span class="k">Expected</span> HTTP 200, heading contains &quot;Deposits&quot;, drawer and user-menu visible</div></div></details></td>
+<td>Mockup Screens</td><td><span class="p P3">P3</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Mockup Screens" data-pri="P3" data-src="Brief" data-mode="parallel">
+<td class="id">TC-MOCK-003</td><td>/accounts/loans renders &quot;Loans &amp; Finances&quot; inside the shell<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> /accounts/loans</div><ol><li>Login</li><li>Open /accounts/loans</li></ol>
+<div><span class="k">Expected</span> HTTP 200, heading contains &quot;Loans &amp; Finances&quot;, drawer and user-menu visible</div></div></details></td>
+<td>Mockup Screens</td><td><span class="p P3">P3</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Mockup Screens" data-pri="P3" data-src="Brief" data-mode="parallel">
+<td class="id">TC-MOCK-004</td><td>/payment/transfer renders &quot;Transfer Money&quot; inside the shell<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> /payment/transfer</div><ol><li>Login</li><li>Open /payment/transfer</li></ol>
+<div><span class="k">Expected</span> HTTP 200, heading contains &quot;Transfer Money&quot;, drawer and user-menu visible</div></div></details></td>
+<td>Mockup Screens</td><td><span class="p P3">P3</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Mockup Screens" data-pri="P3" data-src="Brief" data-mode="parallel">
+<td class="id">TC-MOCK-005</td><td>/payees renders &quot;Manage Payees&quot; inside the shell<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> /payees</div><ol><li>Login</li><li>Open /payees</li></ol>
+<div><span class="k">Expected</span> HTTP 200, heading contains &quot;Manage Payees&quot;, drawer and user-menu visible</div></div></details></td>
+<td>Mockup Screens</td><td><span class="p P3">P3</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Mockup Screens" data-pri="P3" data-src="Brief" data-mode="parallel">
+<td class="id">TC-MOCK-006</td><td>/file-upload renders &quot;Bulk File Upload&quot; inside the shell<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> /file-upload</div><ol><li>Login</li><li>Open /file-upload</li></ol>
+<div><span class="k">Expected</span> HTTP 200, heading contains &quot;Bulk File Upload&quot;, drawer and user-menu visible</div></div></details></td>
+<td>Mockup Screens</td><td><span class="p P3">P3</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Mockup Screens" data-pri="P3" data-src="Brief" data-mode="parallel">
+<td class="id">TC-MOCK-007</td><td>/trade renders &quot;Trade Finance&quot; inside the shell<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> /trade</div><ol><li>Login</li><li>Open /trade</li></ol>
+<div><span class="k">Expected</span> HTTP 200, heading contains &quot;Trade Finance&quot;, drawer and user-menu visible</div></div></details></td>
+<td>Mockup Screens</td><td><span class="p P3">P3</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Mockup Screens" data-pri="P3" data-src="Brief" data-mode="parallel">
+<td class="id">TC-MOCK-008</td><td>/cash-mgmt renders &quot;Cash Management&quot; inside the shell<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> /cash-mgmt</div><ol><li>Login</li><li>Open /cash-mgmt</li></ol>
+<div><span class="k">Expected</span> HTTP 200, heading contains &quot;Cash Management&quot;, drawer and user-menu visible</div></div></details></td>
+<td>Mockup Screens</td><td><span class="p P3">P3</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Mockup Screens" data-pri="P3" data-src="Brief" data-mode="parallel">
+<td class="id">TC-MOCK-009</td><td>/forex renders &quot;Forex Deal&quot; inside the shell<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> /forex</div><ol><li>Login</li><li>Open /forex</li></ol>
+<div><span class="k">Expected</span> HTTP 200, heading contains &quot;Forex Deal&quot;, drawer and user-menu visible</div></div></details></td>
+<td>Mockup Screens</td><td><span class="p P3">P3</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Mockup Screens" data-pri="P3" data-src="Brief" data-mode="parallel">
+<td class="id">TC-MOCK-010</td><td>/reports renders &quot;Reports&quot; inside the shell<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> /reports</div><ol><li>Login</li><li>Open /reports</li></ol>
+<div><span class="k">Expected</span> HTTP 200, heading contains &quot;Reports&quot;, drawer and user-menu visible</div></div></details></td>
+<td>Mockup Screens</td><td><span class="p P3">P3</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Mockup Screens" data-pri="P3" data-src="Brief" data-mode="parallel">
+<td class="id">TC-MOCK-011</td><td>/settings renders &quot;Account Setting&quot; inside the shell<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> /settings</div><ol><li>Login</li><li>Open /settings</li></ol>
+<div><span class="k">Expected</span> HTTP 200, heading contains &quot;Account Setting&quot;, drawer and user-menu visible</div></div></details></td>
+<td>Mockup Screens</td><td><span class="p P3">P3</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Mockup Screens" data-pri="P2" data-src="Brief" data-mode="parallel">
+<td class="id">TC-MOCK-012</td><td>CASA table matches seeded accounts<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> 1234567890, 9876543210, 5555000011</div><ol><li>Login</li><li>Open /accounts/casa</li></ol>
+<div><span class="k">Expected</span> Rows show Operating Account USD 4,520,000.75; AED Collections AED 18,750,000.00; Payroll Account USD 980,000.00</div></div></details></td>
+<td>Mockup Screens</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Mockup Screens" data-pri="P3" data-src="Brief" data-mode="parallel">
+<td class="id">TC-MOCK-013</td><td>Deposits table matches seeded accounts<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> 7001234567, 7009988776</div><ol><li>Login</li><li>Open /accounts/deposits</li></ol>
+<div><span class="k">Expected</span> Fixed Deposit 12M USD 2,500,000.00 and Recurring Deposit AED 600,000.00 shown</div></div></details></td>
+<td>Mockup Screens</td><td><span class="p P3">P3</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Mockup Screens" data-pri="P3" data-src="Brief" data-mode="parallel">
+<td class="id">TC-MOCK-014</td><td>Loans table shows Term Loan Facility<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> 8001112223</div><ol><li>Login</li><li>Open /accounts/loans</li></ol>
+<div><span class="k">Expected</span> Term Loan Facility USD with balance 3,200,000.00 (negative) shown</div></div></details></td>
+<td>Mockup Screens</td><td><span class="p P3">P3</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Dashboard" data-pri="P1" data-src="Brief" data-mode="stateful">
+<td class="id">TC-DASH-001</td><td>Pending count matches backend pending transactions<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Login</li><li>Read pending-count</li><li>GET /api/transactions?status=Pending Approval</li></ol>
+<div><span class="k">Expected</span> pending-count equals number of Pending Approval rows from API</div></div></details></td>
+<td>Dashboard</td><td><span class="p P1">P1</span></td><td>UI+API</td><td><span class="m stateful">stateful</span></td><td>Brief</td></tr>
+<tr data-mod="Dashboard" data-pri="P2" data-src="Brief" data-mode="parallel">
+<td class="id">TC-DASH-002</td><td>Payment Tracker mini shows ref, beneficiary, amount, status<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Login</li><li>Read dashboard-tracker</li></ol>
+<div><span class="k">Expected</span> Headers REFERENCE, BENEFICIARY, AMOUNT, STATUS and at least one row with CBP/IBG ref</div></div></details></td>
+<td>Dashboard</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Dashboard" data-pri="P1" data-src="Brief" data-mode="stateful">
+<td class="id">TC-DASH-003</td><td>Pending count increments after a new submission<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> USD 1,000 adhoc payment</div><ol><li>Read pending-count</li><li>Submit a Cross-Border payment</li><li>Return to Dashboard</li></ol>
+<div><span class="k">Expected</span> pending-count increases by 1</div></div></details></td>
+<td>Dashboard</td><td><span class="p P1">P1</span></td><td>UI+API</td><td><span class="m stateful">stateful</span></td><td>Brief</td></tr>
+<tr data-mod="Dashboard" data-pri="P1" data-src="Brief" data-mode="stateful">
+<td class="id">TC-DASH-004</td><td>Pending count decrements after approval<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> Payment from DASH-003</div><ol><li>Read pending-count</li><li>Approve the payment in Approvals</li><li>Return to Dashboard</li></ol>
+<div><span class="k">Expected</span> pending-count decreases by 1</div></div></details></td>
+<td>Dashboard</td><td><span class="p P1">P1</span></td><td>UI+API</td><td><span class="m stateful">stateful</span></td><td>Brief</td></tr>
+<tr data-mod="Dashboard" data-pri="P2" data-src="Live" data-mode="parallel">
+<td class="id">TC-DASH-005</td><td>Pending tile &quot;Open Payment Tracker&quot; opens Approvals<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Login</li><li>Click &quot;Open Payment Tracker&quot; on tile-pending-approvals</li></ol>
+<div><span class="k">Expected</span> URL is /approvals</div></div></details></td>
+<td>Dashboard</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Live</td></tr>
+<tr data-mod="Dashboard" data-pri="P3" data-src="AI Lens" data-mode="parallel">
+<td class="id">TC-DASH-006</td><td>Notifications bell opens a panel<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Login</li><li>Click topbar-notifications</li></ol>
+<div><span class="k">Expected</span> A notifications panel or list becomes visible</div></div></details></td>
+<td>Dashboard</td><td><span class="p P3">P3</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>AI Lens</td></tr>
+<tr data-mod="Routing Labels" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-RL-001</td><td>Country US sets label &quot;Fedwire Code&quot;<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> US</div><ol><li>Open /payment/international</li><li>Select bene-country US</li></ol>
+<div><span class="k">Expected</span> routing-code-label = &quot;Fedwire Code&quot;</div></div></details></td>
+<td>Routing Labels</td><td><span class="p P1">P1</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Routing Labels" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-RL-002</td><td>Country CA sets label &quot;Sort Code&quot;<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> CA</div><ol><li>Open /payment/international</li><li>Select bene-country CA</li></ol>
+<div><span class="k">Expected</span> routing-code-label = &quot;Sort Code&quot;</div></div></details></td>
+<td>Routing Labels</td><td><span class="p P1">P1</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Routing Labels" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-RL-003</td><td>Country GB sets label &quot;Sort Code&quot;<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> GB</div><ol><li>Open /payment/international</li><li>Select bene-country GB</li></ol>
+<div><span class="k">Expected</span> routing-code-label = &quot;Sort Code&quot;</div></div></details></td>
+<td>Routing Labels</td><td><span class="p P1">P1</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Routing Labels" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-RL-004</td><td>Country NZ sets label &quot;Sort Code&quot;<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> NZ</div><ol><li>Open /payment/international</li><li>Select bene-country NZ</li></ol>
+<div><span class="k">Expected</span> routing-code-label = &quot;Sort Code&quot;</div></div></details></td>
+<td>Routing Labels</td><td><span class="p P1">P1</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Routing Labels" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-RL-005</td><td>Country IN sets label &quot;IFSC Code&quot;<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> IN</div><ol><li>Open /payment/international</li><li>Select bene-country IN</li></ol>
+<div><span class="k">Expected</span> routing-code-label = &quot;IFSC Code&quot;</div></div></details></td>
+<td>Routing Labels</td><td><span class="p P1">P1</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Routing Labels" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-RL-006</td><td>Country AU sets label &quot;BSB Code&quot;<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> AU</div><ol><li>Open /payment/international</li><li>Select bene-country AU</li></ol>
+<div><span class="k">Expected</span> routing-code-label = &quot;BSB Code&quot;</div></div></details></td>
+<td>Routing Labels</td><td><span class="p P1">P1</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Routing Labels" data-pri="P3" data-src="Live" data-mode="parallel">
+<td class="id">TC-RL-007</td><td>Default label before country selected<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Open /payment/international</li></ol>
+<div><span class="k">Expected</span> routing-code-label = &quot;Routing Code&quot;</div></div></details></td>
+<td>Routing Labels</td><td><span class="p P3">P3</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Live</td></tr>
+<tr data-mod="Routing Labels" data-pri="P2" data-src="Brief" data-mode="parallel">
+<td class="id">TC-RL-008</td><td>Label follows repeated country changes<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> US -&gt; IN -&gt; AU -&gt; GB</div><ol><li>Select US, IN, AU, GB in turn</li></ol>
+<div><span class="k">Expected</span> Label is Fedwire Code, IFSC Code, BSB Code, Sort Code in turn</div></div></details></td>
+<td>Routing Labels</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Accuity Lookup" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-ACC-001</td><td>US 021000021 autofills JPMorgan Chase<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> US / 021000021</div><ol><li>Open /payment/international</li><li>Select US</li><li>Enter routing code 021000021</li><li>Tab out</li></ol>
+<div><span class="k">Expected</span> bank-name = &quot;JPMorgan Chase&quot;, bank-address = &quot;New York, NY&quot;, swift-bic = &quot;CHASUS33&quot;, no routing-error</div></div></details></td>
+<td>Accuity Lookup</td><td><span class="p P1">P1</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Accuity Lookup" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-ACC-002</td><td>US 026009593 autofills Bank of America<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> US / 026009593</div><ol><li>Open /payment/international</li><li>Select US</li><li>Enter routing code 026009593</li><li>Tab out</li></ol>
+<div><span class="k">Expected</span> bank-name = &quot;Bank of America&quot;, bank-address = &quot;New York, NY&quot;, swift-bic = &quot;BOFAUS3N&quot;, no routing-error</div></div></details></td>
+<td>Accuity Lookup</td><td><span class="p P1">P1</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Accuity Lookup" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-ACC-003</td><td>IN HDFC0000123 autofills HDFC Bank<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> IN / HDFC0000123</div><ol><li>Open /payment/international</li><li>Select IN</li><li>Enter routing code HDFC0000123</li><li>Tab out</li></ol>
+<div><span class="k">Expected</span> bank-name = &quot;HDFC Bank&quot;, bank-address = &quot;Mumbai&quot;, swift-bic = &quot;HDFCINBB&quot;, no routing-error</div></div></details></td>
+<td>Accuity Lookup</td><td><span class="p P1">P1</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Accuity Lookup" data-pri="P2" data-src="Brief" data-mode="parallel">
+<td class="id">TC-ACC-004</td><td>IN ICIC0000456 autofills ICICI Bank<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> IN / ICIC0000456</div><ol><li>Open /payment/international</li><li>Select IN</li><li>Enter routing code ICIC0000456</li><li>Tab out</li></ol>
+<div><span class="k">Expected</span> bank-name = &quot;ICICI Bank&quot;, bank-address = &quot;Mumbai&quot;, swift-bic = &quot;ICICINBB&quot;, no routing-error</div></div></details></td>
+<td>Accuity Lookup</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Accuity Lookup" data-pri="P2" data-src="Brief" data-mode="parallel">
+<td class="id">TC-ACC-005</td><td>GB 20-00-00 autofills Barclays<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> GB / 20-00-00</div><ol><li>Open /payment/international</li><li>Select GB</li><li>Enter routing code 20-00-00</li><li>Tab out</li></ol>
+<div><span class="k">Expected</span> bank-name = &quot;Barclays&quot;, bank-address = &quot;London&quot;, swift-bic = &quot;BARCGB22&quot;, no routing-error</div></div></details></td>
+<td>Accuity Lookup</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Accuity Lookup" data-pri="P2" data-src="Brief" data-mode="parallel">
+<td class="id">TC-ACC-006</td><td>GB 40-05-15 autofills HSBC<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> GB / 40-05-15</div><ol><li>Open /payment/international</li><li>Select GB</li><li>Enter routing code 40-05-15</li><li>Tab out</li></ol>
+<div><span class="k">Expected</span> bank-name = &quot;HSBC&quot;, bank-address = &quot;London&quot;, swift-bic = &quot;HBUKGB4B&quot;, no routing-error</div></div></details></td>
+<td>Accuity Lookup</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Accuity Lookup" data-pri="P2" data-src="Brief" data-mode="parallel">
+<td class="id">TC-ACC-007</td><td>CA 000300 autofills Royal Bank of Canada<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> CA / 000300</div><ol><li>Open /payment/international</li><li>Select CA</li><li>Enter routing code 000300</li><li>Tab out</li></ol>
+<div><span class="k">Expected</span> bank-name = &quot;Royal Bank of Canada&quot;, bank-address = &quot;Toronto&quot;, swift-bic = &quot;ROYCCAT2&quot;, no routing-error</div></div></details></td>
+<td>Accuity Lookup</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Accuity Lookup" data-pri="P2" data-src="Brief" data-mode="parallel">
+<td class="id">TC-ACC-008</td><td>NZ 010000 autofills ANZ Bank<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> NZ / 010000</div><ol><li>Open /payment/international</li><li>Select NZ</li><li>Enter routing code 010000</li><li>Tab out</li></ol>
+<div><span class="k">Expected</span> bank-name = &quot;ANZ Bank&quot;, bank-address = &quot;Auckland&quot;, swift-bic = &quot;ANZBNZ22&quot;, no routing-error</div></div></details></td>
+<td>Accuity Lookup</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Accuity Lookup" data-pri="P2" data-src="Brief" data-mode="parallel">
+<td class="id">TC-ACC-009</td><td>AU 062-000 autofills Commonwealth Bank<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> AU / 062-000</div><ol><li>Open /payment/international</li><li>Select AU</li><li>Enter routing code 062-000</li><li>Tab out</li></ol>
+<div><span class="k">Expected</span> bank-name = &quot;Commonwealth Bank&quot;, bank-address = &quot;Sydney&quot;, swift-bic = &quot;CTBAAU2S&quot;, no routing-error</div></div></details></td>
+<td>Accuity Lookup</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Accuity Lookup" data-pri="P2" data-src="Brief" data-mode="parallel">
+<td class="id">TC-ACC-010</td><td>AU 082-001 autofills NAB<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> AU / 082-001</div><ol><li>Open /payment/international</li><li>Select AU</li><li>Enter routing code 082-001</li><li>Tab out</li></ol>
+<div><span class="k">Expected</span> bank-name = &quot;NAB&quot;, bank-address = &quot;Melbourne&quot;, swift-bic = &quot;NATAAU33&quot;, no routing-error</div></div></details></td>
+<td>Accuity Lookup</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Accuity Lookup" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-ACC-011</td><td>Invalid code US 000000 rejected<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> US / 000000</div><ol><li>Open /payment/international</li><li>Select US</li><li>Enter 000000</li><li>Tab out</li></ol>
+<div><span class="k">Expected</span> routing-error = &quot;Routing Code not present or invalid.&quot; and bank-name empty</div></div></details></td>
+<td>Accuity Lookup</td><td><span class="p P1">P1</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Accuity Lookup" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-ACC-012</td><td>Invalid code US 999 rejected<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> US / 999</div><ol><li>Open /payment/international</li><li>Select US</li><li>Enter 999</li><li>Tab out</li></ol>
+<div><span class="k">Expected</span> routing-error = &quot;Routing Code not present or invalid.&quot; and bank-name empty</div></div></details></td>
+<td>Accuity Lookup</td><td><span class="p P1">P1</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Accuity Lookup" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-ACC-013</td><td>Invalid code GB 12-34-56 rejected<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> GB / 12-34-56</div><ol><li>Open /payment/international</li><li>Select GB</li><li>Enter 12-34-56</li><li>Tab out</li></ol>
+<div><span class="k">Expected</span> routing-error = &quot;Routing Code not present or invalid.&quot; and bank-name empty</div></div></details></td>
+<td>Accuity Lookup</td><td><span class="p P1">P1</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Accuity Lookup" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-ACC-014</td><td>Valid code with wrong country GB 021000021 rejected<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> GB / 021000021</div><ol><li>Open /payment/international</li><li>Select GB</li><li>Enter 021000021</li><li>Tab out</li></ol>
+<div><span class="k">Expected</span> routing-error = &quot;Routing Code not present or invalid.&quot; and bank-name empty</div></div></details></td>
+<td>Accuity Lookup</td><td><span class="p P1">P1</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Accuity Lookup" data-pri="P2" data-src="AI Lens" data-mode="parallel">
+<td class="id">TC-ACC-015</td><td>Correcting an invalid code clears the error<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> US 000000 then 021000021</div><ol><li>Enter invalid code</li><li>Replace with valid code</li></ol>
+<div><span class="k">Expected</span> routing-error disappears and bank fields autofill</div></div></details></td>
+<td>Accuity Lookup</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>AI Lens</td></tr>
+<tr data-mod="Accuity Lookup" data-pri="P2" data-src="Live" data-mode="parallel">
+<td class="id">TC-ACC-016</td><td>Bank name, address and BIC are read-only<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Open /payment/international</li></ol>
+<div><span class="k">Expected</span> bank-name, bank-address, swift-bic are readonly</div></div></details></td>
+<td>Accuity Lookup</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Live</td></tr>
+<tr data-mod="Accuity Lookup" data-pri="P2" data-src="Live" data-mode="parallel">
+<td class="id">TC-ACC-017</td><td>Invalid code after valid one clears bank fields<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> US 021000021 then 000000</div><ol><li>Enter valid code</li><li>Replace with invalid code</li></ol>
+<div><span class="k">Expected</span> bank-name, swift-bic become empty and routing-error is shown</div></div></details></td>
+<td>Accuity Lookup</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Live</td></tr>
+<tr data-mod="Cross-Border Validation" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-VAL-001</td><td>Empty form shows every required error<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Open /payment/international</li><li>Click Continue to Review</li></ol>
+<div><span class="k">Expected</span> error-bene-name, error-bene-account, error-country, error-amount, error-currency and routing-error show their exact texts; URL unchanged</div></div></details></td>
+<td>Cross-Border Validation</td><td><span class="p P1">P1</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Cross-Border Validation" data-pri="P2" data-src="Brief" data-mode="parallel">
+<td class="id">TC-VAL-002</td><td>Only bene-name missing shows its error<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> All other fields valid</div><ol><li>Fill a valid payment</li><li>Leave bene-name empty</li><li>Click Continue</li></ol>
+<div><span class="k">Expected</span> error-bene-name = &quot;Beneficiary Name is required.&quot; and no navigation to review</div></div></details></td>
+<td>Cross-Border Validation</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Cross-Border Validation" data-pri="P2" data-src="Brief" data-mode="parallel">
+<td class="id">TC-VAL-003</td><td>Only bene-account missing shows its error<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> All other fields valid</div><ol><li>Fill a valid payment</li><li>Leave bene-account empty</li><li>Click Continue</li></ol>
+<div><span class="k">Expected</span> error-bene-account = &quot;Beneficiary Account / IBAN is required.&quot; and no navigation to review</div></div></details></td>
+<td>Cross-Border Validation</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Cross-Border Validation" data-pri="P2" data-src="Brief" data-mode="parallel">
+<td class="id">TC-VAL-004</td><td>Only bene-country missing shows its error<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> All other fields valid</div><ol><li>Fill a valid payment</li><li>Leave bene-country empty</li><li>Click Continue</li></ol>
+<div><span class="k">Expected</span> error-country = &quot;Beneficiary Bank Country is required.&quot; and no navigation to review</div></div></details></td>
+<td>Cross-Border Validation</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Cross-Border Validation" data-pri="P2" data-src="Brief" data-mode="parallel">
+<td class="id">TC-VAL-005</td><td>Only currency missing shows its error<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> All other fields valid</div><ol><li>Fill a valid payment</li><li>Leave currency empty</li><li>Click Continue</li></ol>
+<div><span class="k">Expected</span> error-currency = &quot;Transfer Currency is required.&quot; and no navigation to review</div></div></details></td>
+<td>Cross-Border Validation</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Cross-Border Validation" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-VAL-006</td><td>Amount 0 rejected<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> amount 0</div><ol><li>Fill valid payment with amount 0</li><li>Continue</li></ol>
+<div><span class="k">Expected</span> error-amount = &quot;Transfer Amount must be a number greater than 0.&quot;</div></div></details></td>
+<td>Cross-Border Validation</td><td><span class="p P1">P1</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Cross-Border Validation" data-pri="P1" data-src="AI Lens" data-mode="parallel">
+<td class="id">TC-VAL-007</td><td>Negative amount rejected<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> amount -5</div><ol><li>Fill valid payment with amount -5</li><li>Continue</li></ol>
+<div><span class="k">Expected</span> error-amount = &quot;Transfer Amount must be a number greater than 0.&quot;</div></div></details></td>
+<td>Cross-Border Validation</td><td><span class="p P1">P1</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>AI Lens</td></tr>
+<tr data-mod="Cross-Border Validation" data-pri="P3" data-src="AI Lens" data-mode="parallel">
+<td class="id">TC-VAL-008</td><td>Smallest positive amount 0.01 accepted<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> amount 0.01</div><ol><li>Fill valid payment with amount 0.01</li><li>Continue</li></ol>
+<div><span class="k">Expected</span> Navigates to /payment/review</div></div></details></td>
+<td>Cross-Border Validation</td><td><span class="p P3">P3</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>AI Lens</td></tr>
+<tr data-mod="Cross-Border Validation" data-pri="P2" data-src="AI Lens" data-mode="parallel">
+<td class="id">TC-VAL-009</td><td>Errors clear once corrected and review opens<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Click Continue on empty form</li><li>Fill all fields validly</li><li>Continue</li></ol>
+<div><span class="k">Expected</span> No error-* elements remain and URL is /payment/review</div></div></details></td>
+<td>Cross-Border Validation</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>AI Lens</td></tr>
+<tr data-mod="Cross-Border Validation" data-pri="P3" data-src="AI Lens" data-mode="parallel">
+<td class="id">TC-VAL-010</td><td>Beneficiary name rejects markup<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> &lt;script&gt;alert(1)&lt;/script&gt;</div><ol><li>Enter markup as beneficiary name</li><li>Continue</li></ol>
+<div><span class="k">Expected</span> Input rejected with a validation message (no navigation to review)</div></div></details></td>
+<td>Cross-Border Validation</td><td><span class="p P3">P3</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>AI Lens</td></tr>
+<tr data-mod="Cross-Border Payment" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-CBP-001</td><td>Adhoc US payment reaches review with derived intermediary<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> US 021000021 USD 40000, intermediary blank</div><ol><li>Fill adhoc payment</li><li>Continue</li></ol>
+<div><span class="k">Expected</span> URL /payment/review, review-bene-name matches, review-intermediary-bic = &quot;CITIUS33&quot;, review-amount = &quot;40000 USD&quot;</div></div></details></td>
+<td>Cross-Border Payment</td><td><span class="p P1">P1</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Cross-Border Payment" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-CBP-002</td><td>Submit for approval shows success with CBP ref<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> As CBP-001</div><ol><li>Complete review</li><li>Submit for Approval</li></ol>
+<div><span class="k">Expected</span> success-message = &quot;Payment Submitted for Approval&quot;, txn-ref matches ^CBP\d{10}$, txn-status = &quot;Pending Approval&quot;</div></div></details></td>
+<td>Cross-Border Payment</td><td><span class="p P1">P1</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Cross-Border Payment" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-CBP-003</td><td>View Transaction opens tracker with the new row<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> Ref from CBP-002</div><ol><li>On success page click btn-view-transaction</li></ol>
+<div><span class="k">Expected</span> URL /approvals and a txn-row with the captured ref exists, status Pending Approval</div></div></details></td>
+<td>Cross-Border Payment</td><td><span class="p P1">P1</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Cross-Border Payment" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-CBP-004</td><td>Approving the new payment marks it Processed<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> Ref from submission</div><ol><li>In Approvals click btn-approve on the new row</li></ol>
+<div><span class="k">Expected</span> Row txn-status = &quot;Processed&quot; and btn-approve no longer present</div></div></details></td>
+<td>Cross-Border Payment</td><td><span class="p P1">P1</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Cross-Border Payment" data-pri="P2" data-src="Brief" data-mode="parallel">
+<td class="id">TC-CBP-005</td><td>Blank intermediary derives DEUTDEFF for EUR<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> EUR, intermediary blank</div><ol><li>Fill adhoc payment</li><li>Choose currency EUR</li><li>Continue</li></ol>
+<div><span class="k">Expected</span> review-intermediary-bic = &quot;DEUTDEFF&quot;</div></div></details></td>
+<td>Cross-Border Payment</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Cross-Border Payment" data-pri="P2" data-src="Brief" data-mode="parallel">
+<td class="id">TC-CBP-006</td><td>Blank intermediary derives HSBCGB2L for GBP<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> GBP, intermediary blank</div><ol><li>Fill adhoc payment</li><li>Choose currency GBP</li><li>Continue</li></ol>
+<div><span class="k">Expected</span> review-intermediary-bic = &quot;HSBCGB2L&quot;</div></div></details></td>
+<td>Cross-Border Payment</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Cross-Border Payment" data-pri="P2" data-src="Brief" data-mode="parallel">
+<td class="id">TC-CBP-007</td><td>Blank intermediary derives ATHNAEAD for AED<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> AED, intermediary blank</div><ol><li>Fill adhoc payment</li><li>Choose currency AED</li><li>Continue</li></ol>
+<div><span class="k">Expected</span> review-intermediary-bic = &quot;ATHNAEAD&quot;</div></div></details></td>
+<td>Cross-Border Payment</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Cross-Border Payment" data-pri="P2" data-src="Brief" data-mode="parallel">
+<td class="id">TC-CBP-008</td><td>Blank intermediary derives SBININBB for INR<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> INR, intermediary blank</div><ol><li>Fill adhoc payment</li><li>Choose currency INR</li><li>Continue</li></ol>
+<div><span class="k">Expected</span> review-intermediary-bic = &quot;SBININBB&quot;</div></div></details></td>
+<td>Cross-Border Payment</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Cross-Border Payment" data-pri="P2" data-src="Live" data-mode="parallel">
+<td class="id">TC-CBP-009</td><td>User-entered intermediary BIC is kept<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> intermediary BNPAFRPP</div><ol><li>Fill payment with intermediary BNPAFRPP</li><li>Continue</li></ol>
+<div><span class="k">Expected</span> review-intermediary-bic = &quot;BNPAFRPP&quot;</div></div></details></td>
+<td>Cross-Border Payment</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Live</td></tr>
+<tr data-mod="Cross-Border Payment" data-pri="P2" data-src="Live" data-mode="parallel">
+<td class="id">TC-CBP-010</td><td>Back from review keeps entered values<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Reach review</li><li>Click btn-back</li></ol>
+<div><span class="k">Expected</span> Initiate screen shows same name, account, amount and currency</div></div></details></td>
+<td>Cross-Border Payment</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Live</td></tr>
+<tr data-mod="Cross-Border Payment" data-pri="P2" data-src="Live" data-mode="parallel">
+<td class="id">TC-CBP-011</td><td>Review shows every entered detail<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> IN HDFC0000123 INR, pay via Wire, remarks</div><ol><li>Fill payment</li><li>Continue</li></ol>
+<div><span class="k">Expected</span> Review shows account, country, IFSC Code label and code, HDFC Bank, HDFCINBB, Wire and remarks</div></div></details></td>
+<td>Cross-Border Payment</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Live</td></tr>
+<tr data-mod="Cross-Border Payment" data-pri="P3" data-src="Live" data-mode="parallel">
+<td class="id">TC-CBP-012</td><td>Pay Via offers SWIFT, Wire, Correspondent<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Open initiate screen</li><li>Read pay-via options</li></ol>
+<div><span class="k">Expected</span> Options are exactly SWIFT, Wire, Correspondent; default SWIFT</div></div></details></td>
+<td>Cross-Border Payment</td><td><span class="p P3">P3</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Live</td></tr>
+<tr data-mod="Cross-Border Payment" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-CBP-013</td><td>Submitted payment is stored with the entered fields<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> GB 40-05-15 GBP 1234.5 Correspondent</div><ol><li>Submit payment via UI</li><li>GET /api/transactions?status=All</li></ol>
+<div><span class="k">Expected</span> Row with captured ref has the same beneficiary, amount, currency, bank, SWIFT, payVia</div></div></details></td>
+<td>Cross-Border Payment</td><td><span class="p P1">P1</span></td><td>UI+API</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Cross-Border Payment" data-pri="P2" data-src="Brief" data-mode="parallel">
+<td class="id">TC-CBP-014</td><td>Two submissions get different reference numbers<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> Two payments</div><ol><li>Submit two payments</li></ol>
+<div><span class="k">Expected</span> Both refs match ^CBP\d{10}$ and differ</div></div></details></td>
+<td>Cross-Border Payment</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Saved Beneficiary" data-pri="P2" data-src="Brief" data-mode="parallel">
+<td class="id">TC-SB-001</td><td>Saved list shows seeded beneficiaries<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Choose bene-type-saved</li><li>Read saved-bene-select</li></ol>
+<div><span class="k">Expected</span> Options include &quot;ACME Trading LLC (GB)&quot; and &quot;Global Imports Inc (US)&quot;</div></div></details></td>
+<td>Saved Beneficiary</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Saved Beneficiary" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-SB-002</td><td>ACME Trading LLC prefills GB / Barclays<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> ACME Trading LLC</div><ol><li>Choose saved</li><li>Select ACME Trading LLC</li></ol>
+<div><span class="k">Expected</span> bene-account DE89370400440532013000, country GB, routing 20-00-00, Sort Code label, Barclays, London, BARCGB22</div></div></details></td>
+<td>Saved Beneficiary</td><td><span class="p P1">P1</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Saved Beneficiary" data-pri="P2" data-src="Brief" data-mode="parallel">
+<td class="id">TC-SB-003</td><td>Global Imports Inc prefills US / JPMorgan<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> Global Imports Inc</div><ol><li>Choose saved</li><li>Select Global Imports Inc</li></ol>
+<div><span class="k">Expected</span> bene-account US1234567890, country US, Fedwire Code, 021000021, JPMorgan Chase, CHASUS33</div></div></details></td>
+<td>Saved Beneficiary</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Saved Beneficiary" data-pri="P2" data-src="Live" data-mode="parallel">
+<td class="id">TC-SB-004</td><td>Prefilled saved fields are read-only<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> ACME Trading LLC</div><ol><li>Select saved beneficiary</li></ol>
+<div><span class="k">Expected</span> bene-name, bene-account, routing-code are read-only or disabled</div></div></details></td>
+<td>Saved Beneficiary</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Live</td></tr>
+<tr data-mod="Saved Beneficiary" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-SB-005</td><td>Saved beneficiary end to end creates CBP ref<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> ACME, GBP 500</div><ol><li>Select ACME</li><li>Amount 500 GBP</li><li>Continue</li><li>Submit</li></ol>
+<div><span class="k">Expected</span> Review shows HSBCGB2L intermediary; success ref ^CBP\d{10}$</div></div></details></td>
+<td>Saved Beneficiary</td><td><span class="p P1">P1</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Saved Beneficiary" data-pri="P2" data-src="AI Lens" data-mode="parallel">
+<td class="id">TC-SB-006</td><td>Switching back to adhoc clears saved values<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> ACME then adhoc</div><ol><li>Select ACME</li><li>Choose bene-type-adhoc</li></ol>
+<div><span class="k">Expected</span> bene-name and bene-account are empty and editable</div></div></details></td>
+<td>Saved Beneficiary</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>AI Lens</td></tr>
+<tr data-mod="Drafts" data-pri="P1" data-src="Brief" data-mode="seed">
+<td class="id">TC-DR-001</td><td>Seeded Sunrise Textiles draft present after reset<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Reset</li><li>Open /drafts</li></ol>
+<div><span class="k">Expected</span> A draft-row contains &quot;Sunrise Textiles Ltd&quot; and &quot;GBP 25000&quot;</div></div></details></td>
+<td>Drafts</td><td><span class="p P1">P1</span></td><td>UI</td><td><span class="m seed">seed</span></td><td>Brief</td></tr>
+<tr data-mod="Drafts" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-DR-002</td><td>Save as Draft shows toast<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> Partial adhoc form</div><ol><li>Fill some fields</li><li>Click btn-save-draft</li></ol>
+<div><span class="k">Expected</span> draft-toast visible with &quot;Draft saved.&quot;</div></div></details></td>
+<td>Drafts</td><td><span class="p P1">P1</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Drafts" data-pri="P1" data-src="Live" data-mode="parallel">
+<td class="id">TC-DR-003</td><td>Saved draft listed with label<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> Unique name, INR 123</div><ol><li>Save draft</li><li>Open /drafts</li></ol>
+<div><span class="k">Expected</span> draft-row with &quot;&lt;name&gt; — INR 123&quot; exists</div></div></details></td>
+<td>Drafts</td><td><span class="p P1">P1</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Live</td></tr>
+<tr data-mod="Drafts" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-DR-004</td><td>Open draft repopulates every field<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> IN HDFC0000123 INR 123 Wire remarks</div><ol><li>Save full draft</li><li>Open it from /drafts</li></ol>
+<div><span class="k">Expected</span> URL has ?draft=&lt;id&gt;; every field incl. label IFSC Code, HDFC Bank, HDFCINBB, pay-via, remarks restored</div></div></details></td>
+<td>Drafts</td><td><span class="p P1">P1</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Drafts" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-DR-005</td><td>Delete removes the draft row<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> Own draft</div><ol><li>Save draft</li><li>Delete it in /drafts</li></ol>
+<div><span class="k">Expected</span> Row no longer present after reload</div></div></details></td>
+<td>Drafts</td><td><span class="p P1">P1</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Drafts" data-pri="P3" data-src="AI Lens" data-mode="parallel">
+<td class="id">TC-DR-006</td><td>Delete asks for confirmation<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> Own draft</div><ol><li>Click btn-delete-draft</li></ol>
+<div><span class="k">Expected</span> A confirmation dialog is shown before deletion</div></div></details></td>
+<td>Drafts</td><td><span class="p P3">P3</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>AI Lens</td></tr>
+<tr data-mod="Drafts" data-pri="P2" data-src="Brief" data-mode="parallel">
+<td class="id">TC-DR-007</td><td>Seeded draft opens with GB / HSBC values<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> Sunrise Textiles Ltd</div><ol><li>Open Sunrise draft</li></ol>
+<div><span class="k">Expected</span> bene-name Sunrise Textiles Ltd, GB, 40-05-15, HSBC, HBUKGB4B, GBP, 25000</div></div></details></td>
+<td>Drafts</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Drafts" data-pri="P2" data-src="Live" data-mode="parallel">
+<td class="id">TC-DR-008</td><td>Opened draft can be submitted<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> Own draft</div><ol><li>Open own complete draft</li><li>Continue</li><li>Submit</li></ol>
+<div><span class="k">Expected</span> Success with ^CBP\d{10}$ ref</div></div></details></td>
+<td>Drafts</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Live</td></tr>
+<tr data-mod="Approvals &amp; Tracker" data-pri="P1" data-src="Brief" data-mode="seed">
+<td class="id">TC-APR-001</td><td>Seeded transactions have expected status<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> CBP1000000001, CBP2000000002</div><ol><li>Reset</li><li>Open /approvals</li></ol>
+<div><span class="k">Expected</span> CBP1000000001 Pending Approval; CBP2000000002 Processed</div></div></details></td>
+<td>Approvals &amp; Tracker</td><td><span class="p P1">P1</span></td><td>UI</td><td><span class="m seed">seed</span></td><td>Brief</td></tr>
+<tr data-mod="Approvals &amp; Tracker" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-APR-002</td><td>Filter Pending Approval shows only pending<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Select status-filter Pending Approval</li></ol>
+<div><span class="k">Expected</span> Every visible txn-status = Pending Approval</div></div></details></td>
+<td>Approvals &amp; Tracker</td><td><span class="p P1">P1</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Approvals &amp; Tracker" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-APR-003</td><td>Filter Processed shows only processed<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Select status-filter Processed</li></ol>
+<div><span class="k">Expected</span> Every visible txn-status = Processed and CBP2000000002 present</div></div></details></td>
+<td>Approvals &amp; Tracker</td><td><span class="p P1">P1</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Approvals &amp; Tracker" data-pri="P2" data-src="Brief" data-mode="parallel">
+<td class="id">TC-APR-004</td><td>Filter All shows both statuses<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Select status-filter All</li></ol>
+<div><span class="k">Expected</span> Both Pending Approval and Processed rows visible</div></div></details></td>
+<td>Approvals &amp; Tracker</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Approvals &amp; Tracker" data-pri="P2" data-src="Live" data-mode="parallel">
+<td class="id">TC-APR-005</td><td>Approve shown only on pending rows<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Open /approvals</li></ol>
+<div><span class="k">Expected</span> Processed rows have no btn-approve; every row has btn-download</div></div></details></td>
+<td>Approvals &amp; Tracker</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Live</td></tr>
+<tr data-mod="Approvals &amp; Tracker" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-APR-006</td><td>Download returns the row as JSON<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> CBP2000000002</div><ol><li>Click btn-download on CBP2000000002</li></ol>
+<div><span class="k">Expected</span> File CBP2000000002.json downloaded; JSON refNumber, amount 42000, currency USD, status Processed</div></div></details></td>
+<td>Approvals &amp; Tracker</td><td><span class="p P1">P1</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Approvals &amp; Tracker" data-pri="P3" data-src="Live" data-mode="parallel">
+<td class="id">TC-APR-007</td><td>Tracker columns are complete<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Read txn-table headers</li></ol>
+<div><span class="k">Expected</span> REFERENCE NUMBER, BENEFICIARY NAME, AMOUNT, CURRENCY, COUNTRY, STATUS, CREATED ON, ACTIONS</div></div></details></td>
+<td>Approvals &amp; Tracker</td><td><span class="p P3">P3</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Live</td></tr>
+<tr data-mod="Approvals &amp; Tracker" data-pri="P2" data-src="Brief" data-mode="parallel">
+<td class="id">TC-APR-008</td><td>Approved payment moves to Processed filter<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> Own payment</div><ol><li>Create payment (API)</li><li>Approve in UI</li><li>Filter Processed</li></ol>
+<div><span class="k">Expected</span> Ref visible under Processed and absent under Pending Approval</div></div></details></td>
+<td>Approvals &amp; Tracker</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="IBG Pre-Existing Deal" data-pri="P2" data-src="Brief" data-mode="parallel">
+<td class="id">TC-IBG-001</td><td>Screen loads with accounts and internal beneficiaries<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Open /payment/ibg-deal</li></ol>
+<div><span class="k">Expected</span> from-account lists 1234567890 and 9876543210; ibg-beneficiary lists Athena Subsidiary FZE and Athena Logistics DMCC</div></div></details></td>
+<td>IBG Pre-Existing Deal</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="IBG Pre-Existing Deal" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-IBG-002</td><td>Empty submit shows all IBG errors<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Click Continue on empty form</li></ol>
+<div><span class="k">Expected</span> error-from-account, error-deal-id, error-deal-rate, error-amount, error-currency show exact texts</div></div></details></td>
+<td>IBG Pre-Existing Deal</td><td><span class="p P1">P1</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="IBG Pre-Existing Deal" data-pri="P2" data-src="Brief" data-mode="parallel">
+<td class="id">TC-IBG-003</td><td>Missing Deal ID only<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> All but deal ID</div><ol><li>Fill all except deal-id</li><li>Continue</li></ol>
+<div><span class="k">Expected</span> error-deal-id = &quot;Deal ID is required.&quot;</div></div></details></td>
+<td>IBG Pre-Existing Deal</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="IBG Pre-Existing Deal" data-pri="P2" data-src="Brief" data-mode="parallel">
+<td class="id">TC-IBG-004</td><td>Missing From Account only<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> All but from account</div><ol><li>Fill all except from-account</li><li>Continue</li></ol>
+<div><span class="k">Expected</span> error-from-account = &quot;From Account is required.&quot;</div></div></details></td>
+<td>IBG Pre-Existing Deal</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="IBG Pre-Existing Deal" data-pri="P2" data-src="Brief" data-mode="parallel">
+<td class="id">TC-IBG-005</td><td>Deal rate 0 rejected<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> rate 0</div><ol><li>Fill valid deal with rate 0</li><li>Continue</li></ol>
+<div><span class="k">Expected</span> error-deal-rate = &quot;Deal Rate must be a number greater than 0.&quot;</div></div></details></td>
+<td>IBG Pre-Existing Deal</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="IBG Pre-Existing Deal" data-pri="P2" data-src="Live" data-mode="parallel">
+<td class="id">TC-IBG-006</td><td>Negative deal rate rejected<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> rate -1</div><ol><li>Fill valid deal with rate -1</li><li>Continue</li></ol>
+<div><span class="k">Expected</span> error-deal-rate = &quot;Deal Rate must be a number greater than 0.&quot;</div></div></details></td>
+<td>IBG Pre-Existing Deal</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Live</td></tr>
+<tr data-mod="IBG Pre-Existing Deal" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-IBG-007</td><td>Calc on Debit Account Currency<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> From USD 1234567890, DEAL001, 3.67, AED 1000</div><ol><li>Fill deal</li><li>Rate Applied = Debit Account Currency</li></ol>
+<div><span class="k">Expected</span> calculated-amount = 272.48 and deal-rate-line = &quot;1 USD = 3.67 AED&quot;</div></div></details></td>
+<td>IBG Pre-Existing Deal</td><td><span class="p P1">P1</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="IBG Pre-Existing Deal" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-IBG-008</td><td>Calc on Transfer Amount Currency<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> As IBG-007</div><ol><li>Switch Rate Applied to Transfer Amount Currency</li></ol>
+<div><span class="k">Expected</span> calculated-amount = 3670 and deal-rate-line = &quot;1 USD = 3.67 AED&quot;</div></div></details></td>
+<td>IBG Pre-Existing Deal</td><td><span class="p P1">P1</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="IBG Pre-Existing Deal" data-pri="P3" data-src="AI Lens" data-mode="parallel">
+<td class="id">TC-IBG-009</td><td>Calculated amount shows a currency<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> As IBG-007</div><ol><li>Fill deal</li><li>Read calculated-amount</li></ol>
+<div><span class="k">Expected</span> Calculated amount includes its currency code</div></div></details></td>
+<td>IBG Pre-Existing Deal</td><td><span class="p P3">P3</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>AI Lens</td></tr>
+<tr data-mod="IBG Pre-Existing Deal" data-pri="P2" data-src="Live" data-mode="parallel">
+<td class="id">TC-IBG-010</td><td>Review shows all deal details<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> As IBG-007 + expiry 2027-12-31, John Smith</div><ol><li>Continue</li></ol>
+<div><span class="k">Expected</span> Review lists From Account, beneficiary, DEAL001, 2027-12-31, John Smith, rate 3.67, amount, calculated amount, rate line</div></div></details></td>
+<td>IBG Pre-Existing Deal</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Live</td></tr>
+<tr data-mod="IBG Pre-Existing Deal" data-pri="P3" data-src="Live" data-mode="parallel">
+<td class="id">TC-IBG-011</td><td>Back from review keeps deal values<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Continue</li><li>Click btn-back</li></ol>
+<div><span class="k">Expected</span> deal-id still DEAL001 and amount 1000</div></div></details></td>
+<td>IBG Pre-Existing Deal</td><td><span class="p P3">P3</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Live</td></tr>
+<tr data-mod="IBG Pre-Existing Deal" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-IBG-012</td><td>Submit IBG creates IBG ref<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> As IBG-010</div><ol><li>Continue</li><li>Submit for Approval</li></ol>
+<div><span class="k">Expected</span> txn-ref matches ^IBG\d{10}$; txn-status Pending Approval</div></div></details></td>
+<td>IBG Pre-Existing Deal</td><td><span class="p P1">P1</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="IBG Pre-Existing Deal" data-pri="P2" data-src="Brief" data-mode="parallel">
+<td class="id">TC-IBG-013</td><td>IBG payment visible and approvable in tracker<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> Ref from submission</div><ol><li>Open /approvals</li><li>Approve IBG row</li></ol>
+<div><span class="k">Expected</span> Row present then status Processed</div></div></details></td>
+<td>IBG Pre-Existing Deal</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="IBG Pre-Existing Deal" data-pri="P2" data-src="AI Lens" data-mode="parallel">
+<td class="id">TC-IBG-014</td><td>Expired deal expiry rejected<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> expiry 2020-01-01</div><ol><li>Fill deal with past expiry</li><li>Continue</li></ol>
+<div><span class="k">Expected</span> A validation error blocks review</div></div></details></td>
+<td>IBG Pre-Existing Deal</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>AI Lens</td></tr>
+<tr data-mod="Persistence" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-PER-001</td><td>Payment visible after reload<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> Own payment</div><ol><li>Submit payment</li><li>Reload /approvals</li></ol>
+<div><span class="k">Expected</span> Row with captured ref still present</div></div></details></td>
+<td>Persistence</td><td><span class="p P1">P1</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Persistence" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-PER-002</td><td>Payment visible from a fresh browser session<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> Own payment</div><ol><li>Submit payment</li><li>New browser context, login</li><li>Open /approvals</li></ol>
+<div><span class="k">Expected</span> Row with captured ref present</div></div></details></td>
+<td>Persistence</td><td><span class="p P1">P1</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="Persistence" data-pri="P2" data-src="Brief" data-mode="parallel">
+<td class="id">TC-PER-003</td><td>Draft visible from a fresh browser session<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> Own draft</div><ol><li>Save draft</li><li>New context, login</li><li>Open /drafts</li></ol>
+<div><span class="k">Expected</span> Draft row present</div></div></details></td>
+<td>Persistence</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="API Contract" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-API-001</td><td>GET /api/health<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Call GET /api/health</li></ol>
+<div><span class="k">Expected</span> {ok:true, service:&quot;abdx-backend&quot;, db:&quot;up&quot;}</div></div></details></td>
+<td>API Contract</td><td><span class="p P1">P1</span></td><td>API</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="API Contract" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-API-002</td><td>POST /api/auth/login valid<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Call POST /api/auth/login</li></ol>
+<div><span class="k">Expected</span> 200 with token, userId, username MASHREQCORP, partyName, branchName</div></div></details></td>
+<td>API Contract</td><td><span class="p P1">P1</span></td><td>API</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="API Contract" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-API-003</td><td>POST /api/auth/login invalid<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Call POST /api/auth/login</li></ol>
+<div><span class="k">Expected</span> 401 {error:&quot;Invalid username or password.&quot;}</div></div></details></td>
+<td>API Contract</td><td><span class="p P1">P1</span></td><td>API</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="API Contract" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-API-004</td><td>GET /api/accuity all 10 seeded codes<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Call GET /api/accuity</li></ol>
+<div><span class="k">Expected</span> 200 with exact bankName, bankAddress, swiftBic for each</div></div></details></td>
+<td>API Contract</td><td><span class="p P1">P1</span></td><td>API</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="API Contract" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-API-005</td><td>GET /api/accuity invalid code<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Call GET /api/accuity</li></ol>
+<div><span class="k">Expected</span> 404 {error:&quot;Routing Code not present or invalid.&quot;}</div></div></details></td>
+<td>API Contract</td><td><span class="p P1">P1</span></td><td>API</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="API Contract" data-pri="P2" data-src="Brief" data-mode="parallel">
+<td class="id">TC-API-006</td><td>GET /api/accuity valid code wrong country<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Call GET /api/accuity</li></ol>
+<div><span class="k">Expected</span> 404 with the same exact error</div></div></details></td>
+<td>API Contract</td><td><span class="p P2">P2</span></td><td>API</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="API Contract" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-API-007</td><td>GET /api/accuity/intermediary all 5 currencies<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Call GET /api/accuity/intermediary</li></ol>
+<div><span class="k">Expected</span> USD CITIUS33, EUR DEUTDEFF, GBP HSBCGB2L, AED ATHNAEAD, INR SBININBB</div></div></details></td>
+<td>API Contract</td><td><span class="p P1">P1</span></td><td>API</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="API Contract" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-API-008</td><td>GET /api/deal-calc Debit Account Currency<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Call GET /api/deal-calc</li></ol>
+<div><span class="k">Expected</span> calculatedAmount 272.48, formattedRate &quot;1 USD = 3.67 AED&quot; (debit USD, transfer AED)</div></div></details></td>
+<td>API Contract</td><td><span class="p P1">P1</span></td><td>API</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="API Contract" data-pri="P2" data-src="Brief" data-mode="parallel">
+<td class="id">TC-API-009</td><td>GET /api/deal-calc Transfer Amount Currency<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Call GET /api/deal-calc</li></ol>
+<div><span class="k">Expected</span> calculatedAmount 3670</div></div></details></td>
+<td>API Contract</td><td><span class="p P2">P2</span></td><td>API</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="API Contract" data-pri="P2" data-src="Brief" data-mode="parallel">
+<td class="id">TC-API-010</td><td>GET /api/beneficiaries?kind=CROSS_BORDER<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Call GET /api/beneficiaries?kind=CROSS_BORDER</li></ol>
+<div><span class="k">Expected</span> ACME Trading LLC and Global Imports Inc with seeded details</div></div></details></td>
+<td>API Contract</td><td><span class="p P2">P2</span></td><td>API</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="API Contract" data-pri="P2" data-src="Brief" data-mode="parallel">
+<td class="id">TC-API-011</td><td>GET /api/beneficiaries?kind=INTERNAL<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Call GET /api/beneficiaries?kind=INTERNAL</li></ol>
+<div><span class="k">Expected</span> Athena Subsidiary FZE and Athena Logistics DMCC, AED</div></div></details></td>
+<td>API Contract</td><td><span class="p P2">P2</span></td><td>API</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="API Contract" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-API-012</td><td>POST /api/transactions then approve<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Call POST /api/transactions</li></ol>
+<div><span class="k">Expected</span> ref ^CBP\d{10}$, status Pending Approval; approve gives Processed</div></div></details></td>
+<td>API Contract</td><td><span class="p P1">P1</span></td><td>API</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="API Contract" data-pri="P2" data-src="Brief" data-mode="parallel">
+<td class="id">TC-API-013</td><td>GET /api/transactions?status=Pending Approval<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Call GET /api/transactions?status=Pending</li></ol>
+<div><span class="k">Expected</span> Only Pending Approval rows returned</div></div></details></td>
+<td>API Contract</td><td><span class="p P2">P2</span></td><td>API</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="API Contract" data-pri="P1" data-src="Brief" data-mode="parallel">
+<td class="id">TC-API-014</td><td>Drafts CRUD<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Call Drafts CRUD</li></ol>
+<div><span class="k">Expected</span> POST creates, GET :id returns, DELETE removes, GET :id then 404</div></div></details></td>
+<td>API Contract</td><td><span class="p P1">P1</span></td><td>API</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="API Contract" data-pri="P2" data-src="Brief" data-mode="parallel">
+<td class="id">TC-API-015</td><td>GET /api/transactions/:id/download<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Call GET /api/transactions/:id/download</li></ol>
+<div><span class="k">Expected</span> JSON of the row with matching refNumber</div></div></details></td>
+<td>API Contract</td><td><span class="p P2">P2</span></td><td>API</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="API Contract" data-pri="P3" data-src="Brief" data-mode="parallel">
+<td class="id">TC-API-016</td><td>POST /api/auth/logout<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>Call POST /api/auth/logout</li></ol>
+<div><span class="k">Expected</span> 2xx response</div></div></details></td>
+<td>API Contract</td><td><span class="p P3">P3</span></td><td>API</td><td><span class="m parallel">parallel</span></td><td>Brief</td></tr>
+<tr data-mod="API Contract" data-pri="P1" data-src="Brief" data-mode="seed">
+<td class="id">TC-API-017</td><td>POST /api/reset response shape<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> -</div><ol><li>POST /api/reset</li></ol>
+<div><span class="k">Expected</span> {ok:true, resetAt:&lt;ISO timestamp&gt;}; afterwards seeds restored</div></div></details></td>
+<td>API Contract</td><td><span class="p P1">P1</span></td><td>API</td><td><span class="m seed">seed</span></td><td>Brief</td></tr>
+<tr data-mod="Security &amp; Robustness" data-pri="P1" data-src="AI Lens" data-mode="parallel">
+<td class="id">TC-SEC-001</td><td>Transactions API rejects calls without a token<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> No Authorization header</div><ol><li>GET /api/transactions?status=All with no token</li></ol>
+<div><span class="k">Expected</span> 401 or 403</div></div></details></td>
+<td>Security &amp; Robustness</td><td><span class="p P1">P1</span></td><td>API</td><td><span class="m parallel">parallel</span></td><td>AI Lens</td></tr>
+<tr data-mod="Security &amp; Robustness" data-pri="P1" data-src="AI Lens" data-mode="parallel">
+<td class="id">TC-SEC-002</td><td>Drafts and beneficiaries APIs reject calls without a token<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> No token</div><ol><li>GET /api/drafts</li><li>GET /api/beneficiaries?kind=CROSS_BORDER</li></ol>
+<div><span class="k">Expected</span> 401 or 403 for both</div></div></details></td>
+<td>Security &amp; Robustness</td><td><span class="p P1">P1</span></td><td>API</td><td><span class="m parallel">parallel</span></td><td>AI Lens</td></tr>
+<tr data-mod="Security &amp; Robustness" data-pri="P2" data-src="AI Lens" data-mode="parallel">
+<td class="id">TC-SEC-003</td><td>Logout clears payment form data from sessionStorage<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> Partially filled form</div><ol><li>Fill bene name</li><li>Logout</li><li>Inspect sessionStorage and log back in</li></ol>
+<div><span class="k">Expected</span> No beneficiary data remains; initiate form is empty</div></div></details></td>
+<td>Security &amp; Robustness</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>AI Lens</td></tr>
+<tr data-mod="Security &amp; Robustness" data-pri="P2" data-src="AI Lens" data-mode="parallel">
+<td class="id">TC-SEC-004</td><td>Corporate Maker is not offered Approve<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> MASHREQCORP (role Corporate Maker)</div><ol><li>Open /approvals as maker</li></ol>
+<div><span class="k">Expected</span> btn-approve not shown to a maker (segregation of duties)</div></div></details></td>
+<td>Security &amp; Robustness</td><td><span class="p P2">P2</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>AI Lens</td></tr>
+<tr data-mod="Security &amp; Robustness" data-pri="P3" data-src="AI Lens" data-mode="parallel">
+<td class="id">TC-SEC-005</td><td>Transfer Money Continue does something<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> /payment/transfer</div><ol><li>Open /payment/transfer</li><li>Fill amount</li><li>Click Continue</li></ol>
+<div><span class="k">Expected</span> Navigates to a review step or shows validation</div></div></details></td>
+<td>Security &amp; Robustness</td><td><span class="p P3">P3</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>AI Lens</td></tr>
+<tr data-mod="Security &amp; Robustness" data-pri="P3" data-src="AI Lens" data-mode="parallel">
+<td class="id">TC-SEC-006</td><td>No horizontal scroll at phone width<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> 390x844 viewport</div><ol><li>Open /dashboard and /payment/international at 390px</li></ol>
+<div><span class="k">Expected</span> document scrollWidth &lt;= viewport width</div></div></details></td>
+<td>Security &amp; Robustness</td><td><span class="p P3">P3</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>AI Lens</td></tr>
+<tr data-mod="Security &amp; Robustness" data-pri="P3" data-src="AI Lens" data-mode="parallel">
+<td class="id">TC-SEC-007</td><td>Canada and New Zealand use correct routing terms<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> CA, NZ</div><ol><li>Select CA then NZ</li></ol>
+<div><span class="k">Expected</span> CA shows Transit Number (or Institution/Transit), NZ shows Bank Code, not &quot;Sort Code&quot; (banking accuracy)</div></div></details></td>
+<td>Security &amp; Robustness</td><td><span class="p P3">P3</span></td><td>UI</td><td><span class="m parallel">parallel</span></td><td>AI Lens</td></tr>
+<tr data-mod="Security &amp; Robustness" data-pri="P3" data-src="AI Lens" data-mode="parallel">
+<td class="id">TC-SEC-008</td><td>Saved GB payee has a GB IBAN<details><summary>Steps and expected</summary>
+<div class="d"><div><span class="k">Test data</span> ACME Trading LLC</div><ol><li>GET /api/beneficiaries?kind=CROSS_BORDER</li></ol>
+<div><span class="k">Expected</span> ACME (country GB) IBAN starts with GB</div></div></details></td>
+<td>Security &amp; Robustness</td><td><span class="p P3">P3</span></td><td>API</td><td><span class="m parallel">parallel</span></td><td>AI Lens</td></tr></tbody></table></div>
+</div><script>
+const q=document.getElementById('q'),fm=document.getElementById('fm'),fp=document.getElementById('fp'),fs=document.getElementById('fs'),n=document.getElementById('n');
+function f(){let k=0;const s=q.value.toLowerCase();document.querySelectorAll('#tb tr').forEach(r=>{const ok=(!fm.value||r.dataset.mod===fm.value)&&(!fp.value||r.dataset.pri===fp.value)&&(!fs.value||r.dataset.src===fs.value)&&(!s||r.textContent.toLowerCase().includes(s));r.style.display=ok?'':'none';if(ok)k++});n.textContent=k+' of 154 test cases shown'}
+[q,fm,fp,fs].forEach(e=>e.addEventListener('input',f));f();</script></body></html>
